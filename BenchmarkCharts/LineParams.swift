@@ -15,7 +15,7 @@ extension BenchmarkTheme {
         let shadowRadius: CGFloat
 
         init(lineWidth: CGFloat, color: NSColor, dash: [CGFloat] = [], phase: CGFloat = 0,
-             capStyle: NSBezierPath.LineCapStyle = .roundLineCapStyle, joinStyle: NSBezierPath.LineJoinStyle = .roundLineJoinStyle,
+             capStyle: NSBezierPath.LineCapStyle = .round, joinStyle: NSBezierPath.LineJoinStyle = .round,
              shadowRadius: CGFloat = 0) {
             self.lineWidth = lineWidth
             self.color = color

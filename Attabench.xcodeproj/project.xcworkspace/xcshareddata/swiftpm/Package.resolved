@@ -3,7 +3,7 @@
     "pins": [
       {
         "package": "Benchmarking",
-        "repositoryURL": "https://github.com/azeff/Benchmarking",
+        "repositoryURL": "https://github.com/azeff/Benchmarking.git",
         "state": {
           "branch": "master",
           "revision": "5fb2680a1a3d6197f5dbba29d9d57c2c1c56799e",

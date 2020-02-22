@@ -1,9 +1,7 @@
 language: objective-c
-osx_image: xcode10
-install:
-- carthage bootstrap --platform macOS --no-use-binaries
+osx_image: xcode11
 script:
-- xcrun xcodebuild -project Attabench.xcodeproj -scheme Benchmarking
+- xcrun xcodebuild -project Attabench.xcodeproj -scheme Attabench
 - swift build
-- (cd SampleBenchmark.attabench && swift build)
-- (cd OptimizingCollections.attabench && swift build)
+- (cd ExampleBenchmarks/SampleBenchmark.attabench && swift build)
+- (cd ExampleBenchmarks/OptimizingCollections.attabench && swift build)

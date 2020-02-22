@@ -16,7 +16,7 @@ extension FileManager {
         guard let q = mkdtemp(p) else {
             throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno), userInfo: nil)
         }
-        return URL(fileURLWithPath: self.string(withFileSystemRepresentation: q, length: strlen(p)),
+        return URL(fileURLWithPath: self.string(withFileSystemRepresentation: q, length: strlen(q)),
                    isDirectory: true)
     }
 

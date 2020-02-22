@@ -3,7 +3,7 @@
 // For licensing information, see the file LICENSE.md in the Git repository above.
 
 import Cocoa
-import GlueKit
+import Combine
 import BenchmarkModel
 
 class TaskCellView: NSTableCellView {
@@ -16,30 +16,38 @@ class TaskCellView: NSTableCellView {
         self.appearance = NSAppearance(named: .vibrantLight)
     }
 
-    private var taskConnections = Connector()
+    private var cancellables: Set<AnyCancellable> = []
+   
     var task: Task? = nil {
         didSet {
-            taskConnections.disconnect()
+            cancellables = []
+
             if let task = task {
                 self.textField?.stringValue = task.name
-                taskConnections.connect(task.checked.values) { [unowned self] value in
-                    guard let checkbox = self.checkbox else { return }
-                    let v: NSControl.StateValue = (value ? .on : .off)
-                    if checkbox.state != v {
-                        checkbox.state = v
+                task.checked
+                    .sink { [unowned self] value in
+                        guard let checkbox = self.checkbox else { return }
+                        let v: NSControl.StateValue = (value ? .on : .off)
+                        if checkbox.state != v {
+                            checkbox.state = v
+                        }
                     }
-                }
-                taskConnections.connect(task.isRunnable.values) { [unowned self, task] value in
-                    guard let label = self.textField else { return }
-                    let title = task.name + (value ? "" : " ✖︎")
-                    if label.stringValue != title {
-                        label.stringValue = title
+                    .store(in: &cancellables)
+                task.isRunnable
+                    .sink { [unowned self, task] value in
+                        guard let label = self.textField else { return }
+                        let title = task.name + (value ? "" : " ✖︎")
+                        if label.stringValue != title {
+                            label.stringValue = title
+                        }
                     }
-                }
-                taskConnections.connect(task.sampleCount.values) { [unowned self] value in
-                    guard let detail = self.detail else { return }
-                    detail.stringValue = "\(value)"
-                }
+                    .store(in: &cancellables)
+                task.sampleCount
+                    .sink { [unowned self] value in
+                        guard let detail = self.detail else { return }
+                        detail.stringValue = "\(value)"
+                    }
+                    .store(in: &cancellables)
             }
         }
     }
@@ -60,18 +68,22 @@ class TaskCellView: NSTableCellView {
 
         let value = (sender.state == .on)
 
-        let selectedTasks = selectedRows.map { tasks[$0] }
+        let selectedTasks = selectedRows.map { tasks.value[$0] }
         let clearedTasks = clearOthers
             ? (IndexSet(integersIn: 0 ..< tableView.numberOfRows)
                 .subtracting(selectedRows)
-                .map { tasks[$0] })
+                .map { tasks.value[$0] })
             : []
 
-        selectedTasks.forEach { $0.checked.apply(.beginTransaction) }
-        clearedTasks.forEach { $0.checked.apply(.beginTransaction) }
+//        selectedTasks.forEach { $0.checked.apply(.beginTransaction) }
+//        clearedTasks.forEach { $0.checked.apply(.beginTransaction) }
         selectedTasks.forEach { $0.checked.value = clearOthers ? true : value }
         clearedTasks.forEach { $0.checked.value = false }
-        selectedTasks.forEach { $0.checked.apply(.endTransaction) }
-        clearedTasks.forEach { $0.checked.apply(.endTransaction) }
+//        selectedTasks.forEach { $0.checked.apply(.endTransaction) }
+//        clearedTasks.forEach { $0.checked.apply(.endTransaction) }
+        
+        // FIXME: EK - Signalling about changes in a Task model. To update chart config in response
+        // This is uuuugly as hell
+        context.model.value.tasks.value = context.model.value.tasks.value
     }
 }

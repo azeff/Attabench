@@ -1,4 +1,4 @@
-// swift-tools-version:4.0
+// swift-tools-version:5.1
 import PackageDescription
 
 let package = Package(
@@ -7,10 +7,10 @@ let package = Package(
         .executable(name: "Benchmark", targets: ["Benchmark"])
     ],
     dependencies: [
-    .package(url: "https://github.com/attaswift/Benchmarking", .branch("master"))
+        .package(url: "https://github.com/azeff/Benchmarking", .branch("master")),
     ],
     targets: [
         .target(name: "Benchmark", dependencies: ["Benchmarking"], path: "Sources"),
     ],
-    swiftLanguageVersions: [4]
+    swiftLanguageVersions: [.v5]
 )

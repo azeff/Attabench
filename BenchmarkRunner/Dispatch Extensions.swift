@@ -25,7 +25,7 @@ extension DispatchIO {
         self.read(offset: 0, length: Int(bitPattern: SIZE_MAX), queue: queue) { done, data, err in
             if var data = data {
                 // Find record boundaries and send complete records to handler (including delimiter).
-                while let index = data.index(of: delimiter) {
+                while let index = data.firstIndex(of: delimiter) {
                     pending.append(contentsOf: data.subdata(in: 0 ..< index + 1))
                     handler(.record(pending))
                     pending = Data()

@@ -9,7 +9,7 @@ extension BenchmarkTheme {
         var font: NSFont
         var color: NSColor
 
-        var attributes: [NSAttributedStringKey: Any] {
+        var attributes: [NSAttributedString.Key: Any] {
             return [.foregroundColor: color,
                     .font: font]
         }

@@ -387,8 +387,8 @@ public struct BenchmarkRenderer {
     }
 }
 
-extension BenchmarkRenderer: CustomPlaygroundQuickLookable {
-    public var customPlaygroundQuickLook: PlaygroundQuickLook {
-        return .image(self.image)
+extension BenchmarkRenderer: CustomPlaygroundDisplayConvertible {
+    public var playgroundDescription: Any {
+        return image
     }
 }

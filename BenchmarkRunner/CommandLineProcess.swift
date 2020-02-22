@@ -8,7 +8,7 @@ public protocol CommandLineDelegate {
     func commandLineProcess(_ process: CommandLineProcess, didPrintToStandardOutput line: String)
     func commandLineProcess(_ process: CommandLineProcess, didPrintToStandardError line: String)
     func commandLineProcess(_ process: CommandLineProcess, channel: CommandLineProcess.Channel, didFailWithError error: Int32)
-    func commandLineProcess(_ process: CommandLineProcess, didExitWithState state: CommandLineProcess.ExitState)
+    func commandLineProcess(_ process: CommandLineProcess, didExitDueTo exitReason: CommandLineProcess.ExitReason, withStatus exitStatus: CommandLineProcess.ExitStatus)
 }
 
 public class CommandLineProcess {
@@ -17,7 +17,10 @@ public class CommandLineProcess {
         case output
         case error
     }
-
+    
+    public typealias ExitReason = Process.TerminationReason
+    public typealias ExitStatus = Int32
+    
     public enum ExitState: Equatable {
         case exit(Int32)
         case uncaughtSignal(Int32)
@@ -81,12 +84,7 @@ public class CommandLineProcess {
                 self.stdinChannel.close(flags: .stop)
                 self.stdoutChannel.close(flags: .stop)
                 self.stderrChannel.close(flags: .stop)
-                switch process.terminationReason {
-                case .exit:
-                    self.delegate.commandLineProcess(self, didExitWithState: .exit(process.terminationStatus))
-                case .uncaughtSignal:
-                    self.delegate.commandLineProcess(self, didExitWithState: .uncaughtSignal(process.terminationStatus))
-                }
+                self.delegate.commandLineProcess(self, didExitDueTo: process.terminationReason, withStatus: process.terminationStatus)
             }
         }
     }

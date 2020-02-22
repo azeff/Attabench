@@ -243,8 +243,8 @@ public struct BenchmarkChart {
     }
 }
 
-extension BenchmarkChart: CustomPlaygroundQuickLookable {
-    public var customPlaygroundQuickLook: PlaygroundQuickLook {
+extension BenchmarkChart: CustomPlaygroundDisplayConvertible {
+    public var playgroundDescription: Any {
         var options = BenchmarkRenderer.Options()
         options.showTitle = true
         options.legendPosition = .topLeft
@@ -253,6 +253,6 @@ extension BenchmarkChart: CustomPlaygroundQuickLookable {
         let rect = CGRect(x: 0, y: 0, width: 1024, height: 640)
         let theme = BenchmarkTheme.Predefined.screen
         let renderer = BenchmarkRenderer(chart: self, theme: theme, options: options, in: rect)
-        return .image(renderer.image)
+        return renderer.image
     }
 }

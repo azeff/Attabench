@@ -1,5 +1,5 @@
 //
-//  BTree4.swift
+//  BTree3.swift
 //  Attabench
 //
 //  Copyright © 2017 Károly Lőrentey.
@@ -7,7 +7,7 @@
 
 private let internalOrder = 16
 
-public struct BTree4<Element: Comparable> {
+public struct BTree3<Element: Comparable> {
     fileprivate var root: Node<Element>
 
     public init(order: Int) {
@@ -15,7 +15,7 @@ public struct BTree4<Element: Comparable> {
     }
 }
 
-extension BTree4 {
+extension BTree3 {
     public init() {
         self.init(order: Swift.max(16, cacheSize / (MemoryLayout<Element>.stride << 2)))
     }
@@ -35,11 +35,11 @@ fileprivate class Node<Element: Comparable> {
 
     deinit {
         elements.deinitialize(count: elementCount)
-        elements.deallocate(capacity: order)
+        elements.deallocate()
     }
 }
 
-extension BTree4 {
+extension BTree3 {
     public func forEach(_ body: (Element) throws -> Void) rethrows {
         try root.forEach(body)
     }
@@ -80,7 +80,7 @@ extension Node {
     }
 }
 
-extension BTree4 {
+extension BTree3 {
     public func contains(_ element: Element) -> Bool {
         return root.contains(element)
     }
@@ -95,7 +95,7 @@ extension Node {
     }
 }
 
-extension BTree4 {
+extension BTree3 {
     fileprivate mutating func makeRootUnique() -> Node<Element> {
         if isKnownUniquelyReferenced(&root) { return root }
         root = root.clone()
@@ -164,20 +164,6 @@ extension Node {
     }
 }
 
-extension UnsafeMutablePointer {
-    @inline(__always)
-    fileprivate mutating func advancingInitialize(to value: Pointee, count: Int = 1) {
-        self.initialize(to: value, count: count)
-        self += count
-    }
-
-    @inline(__always)
-    fileprivate mutating func advancingInitialize(from source: UnsafePointer<Pointee>, count: Int) {
-        self.initialize(from: source, count: count)
-        self += count
-    }
-}
-
 extension Node {
     fileprivate func _insertElement(_ element: Element, at slot: Int) {
         assert(slot >= 0 && slot <= elementCount)
@@ -187,19 +173,7 @@ extension Node {
     }
 }
 
-
 extension Node {
-    func _splittingInsert(_ element: Element, with child: Node? = nil, at slot: Int) -> Splinter<Element>? {
-        _insertElement(element, at: slot)
-        if let child = child {
-            children.insert(child, at: slot + 1)
-        }
-        if elementCount <= maxElements {
-            return nil
-        }
-        return split()
-    }
-
     func insert(_ element: Element) -> (old: Element?, splinter: Splinter<Element>?) {
         let slot = self.slot(of: element)
         if slot.match {
@@ -209,161 +183,29 @@ extension Node {
         mutationCount += 1
         if self.isLeaf {
             _insertElement(element, at: slot.index)
-            return (nil, isTooLarge ? split() : nil)
+            return (nil, self.isTooLarge ? self.split() : nil)
         }
-
-        if isKnownUniquelyReferenced(&children[slot.index]) {
-            let (old, splinter) = children[slot.index].insert(element)
-            guard let s = splinter else { return (old, nil) }
-            _insertElement(s.separator, at: slot.index)
-            children.insert(s.node, at: slot.index + 1)
-            return (nil, isTooLarge ? split() : nil)
-        }
-
-        let (old, trunk, splinter) = children[slot.index].inserting(element)
-        children[slot.index] = trunk
-        if let s = splinter {
-            _insertElement(s.separator, at: slot.index)
-            children.insert(s.node, at: slot.index + 1)
-            return (nil, isTooLarge ? split() : nil)
-        }
-        return (old, nil)
+        let (old, splinter) = makeChildUnique(slot.index).insert(element)
+        guard let s = splinter else { return (old, nil) }
+        _insertElement(s.separator, at: slot.index)
+        self.children.insert(s.node, at: slot.index + 1)
+        return (old, self.isTooLarge ? self.split() : nil)
     }
 }
 
-extension Node {
-    private func _inserting(_ element: Element, with neighbors: (Node, Node)? = nil, at slot: Int) -> (trunk: Node, splinter: Splinter<Element>?) {
-        if elementCount < maxElements {
-            let trunk = Node<Element>(order: order)
-            trunk.elementCount = elementCount + 1
-            var p = trunk.elements
-            p.advancingInitialize(from: elements, count: slot)
-            p.advancingInitialize(to: element)
-            p.advancingInitialize(from: elements + slot, count: elementCount - slot)
-            if let neighbors = neighbors {
-                trunk.children = self.children
-                trunk.children.insert(neighbors.1, at: slot + 1)
-                trunk.children[slot] = neighbors.0
-            }
-            return (trunk, nil)
-        }
-        // Split
-        let middle = (elementCount + 1) / 2
-        let separator: Element
-        let left = Node<Element>(order: order)
-        let right = Node<Element>(order: order)
-        left.elementCount = middle
-        right.elementCount = elementCount - middle
-        if middle < slot {
-            separator = elements[middle]
-
-            left.elements.initialize(from: elements, count: middle)
-
-            var p = right.elements
-            p.advancingInitialize(from: elements + middle + 1, count: slot - middle - 1)
-            p.advancingInitialize(to: element)
-            p.advancingInitialize(from: elements + slot, count: elementCount - slot)
-
-            if let neighbors = neighbors {
-                left.children += children[0 ... middle]
-                right.children += children[middle + 1 ..< slot]
-                right.children.append(neighbors.0)
-                right.children.append(neighbors.1)
-                if slot < elementCount {
-                    right.children += children[slot + 1 ... elementCount]
-                }
-            }
-        }
-        else if middle > slot {
-            separator = elements[middle - 1]
-
-            var p = left.elements
-            p.advancingInitialize(from: elements, count: slot)
-            p.advancingInitialize(to: element)
-            p.advancingInitialize(from: elements + slot, count: middle - slot - 1)
-
-            right.elements.initialize(from: elements + middle, count: elementCount - middle)
-
-            if let neighbors = neighbors {
-                left.children += children[0 ..< slot]
-                left.children.append(neighbors.0)
-                left.children.append(neighbors.1)
-                left.children += children[slot + 1 ..< middle]
-                right.children += children[middle ... elementCount]
-            }
-        }
-        else { // median == slot
-            separator = element
-
-            left.elements.initialize(from: elements, count: middle)
-            right.elements.initialize(from: elements + middle, count: elementCount - middle)
-
-            if let neighbors = neighbors {
-                left.children += children[0 ..< middle]
-                left.children.append(neighbors.0)
-
-                right.children.append(neighbors.1)
-                right.children += children[middle + 1 ... elementCount]
-            }
-        }
-        return (left, Splinter(separator: separator, node: right))
-    }
-
-    func inserting(_ element: Element) -> (old: Element?, trunk: Node, splinter: Splinter<Element>?) {
-        let slot = self.slot(of: element)
-        if slot.match {
-            // The element is already in the tree.
-            return (self.elements[slot.index], self, nil)
-        }
-        if isLeaf {
-            let (trunk, splinter) = self._inserting(element, at: slot.index)
-            return (nil, trunk, splinter)
-        }
-        else {
-            let (old, trunk, splinter) = self.children[slot.index].inserting(element)
-            if let old = old { return (old, self, nil) }
-            if let splinter = splinter {
-                let (t, s) = self._inserting(splinter.separator, with: (trunk, splinter.node), at: slot.index)
-                return (nil, t, s)
-            }
-            else {
-                let node = self.clone()
-                node.children[slot.index] = trunk
-                return (nil, node, nil)
-            }
-        }
-    }
-}
-
-extension Node {
-    convenience init(trunk: Node, splinter: Splinter<Element>) {
-        self.init(order: internalOrder)
-        self.elementCount = 1
-        self.elements.initialize(to: splinter.separator)
-        self.children = [trunk, splinter.node]
-    }
-}
-
-extension BTree4 {
+extension BTree3 {
     @discardableResult
     public mutating func insert(_ element: Element) -> (inserted: Bool, memberAfterInsert: Element) {
-        if isKnownUniquelyReferenced(&root) {
-            let (old, splinter) = root.insert(element)
-            if let splinter = splinter {
-                self.root = Node(trunk: self.root, splinter: splinter)
-            }
-            return (old == nil, old ?? element)
+        let root = makeRootUnique()
+        let (old, splinter) = root.insert(element)
+        if let s = splinter {
+            let root = Node<Element>(order: internalOrder)
+            root.elementCount = 1
+            root.elements.initialize(to: s.separator)
+            root.children = [self.root, s.node]
+            self.root = root
         }
-        else {
-            let (old, trunk, splinter) = root.inserting(element)
-            if let splinter = splinter {
-                self.root = Node(trunk: trunk, splinter: splinter)
-            }
-            else {
-                self.root = trunk
-            }
-            return (old == nil, old ?? element)
-        }
+        return (inserted: old == nil, memberAfterInsert: old ?? element)
     }
 }
 
@@ -396,14 +238,14 @@ extension PathElement: Equatable {
     }
 }
 
-public struct BTree4Index<Element: Comparable>: Comparable {
+public struct BTree3Index<Element: Comparable>: Comparable {
     fileprivate weak var root: Node<Element>?
     fileprivate let mutationCount: Int64
 
     fileprivate var path: [PathElement<Element>]
     fileprivate var current: PathElement<Element>
 
-    init(startOf tree: BTree4<Element>) {
+    init(startOf tree: BTree3<Element>) {
         self.root = tree.root
         self.mutationCount = tree.root.mutationCount
         self.path = []
@@ -411,7 +253,7 @@ public struct BTree4Index<Element: Comparable>: Comparable {
         while !current.isLeaf { push(0) }
     }
 
-    init(endOf tree: BTree4<Element>) {
+    init(endOf tree: BTree3<Element>) {
         self.root = tree.root
         self.mutationCount = tree.root.mutationCount
         self.path = []
@@ -419,13 +261,13 @@ public struct BTree4Index<Element: Comparable>: Comparable {
     }
 }
 
-extension BTree4Index {
+extension BTree3Index {
     fileprivate func validate(for root: Node<Element>) {
         precondition(self.root === root)
         precondition(self.mutationCount == root.mutationCount)
     }
 
-    fileprivate static func validate(_ left: BTree4Index, _ right: BTree4Index) {
+    fileprivate static func validate(_ left: BTree3Index, _ right: BTree3Index) {
         precondition(left.root === right.root)
         precondition(left.mutationCount == right.mutationCount)
         precondition(left.root != nil)
@@ -433,7 +275,7 @@ extension BTree4Index {
     }
 }
 
-extension BTree4Index {
+extension BTree3Index {
     fileprivate mutating func push(_ slot: Int) {
         path.append(current)
         current = PathElement(current.node.children[current.slot], slot)
@@ -444,7 +286,7 @@ extension BTree4Index {
     }
 }
 
-extension BTree4Index {
+extension BTree3Index {
     fileprivate mutating func formSuccessor() {
         precondition(!current.isAtEnd, "Cannot advance beyond endIndex")
         current.slot += 1
@@ -461,7 +303,7 @@ extension BTree4Index {
     }
 }
 
-extension BTree4Index {
+extension BTree3Index {
     fileprivate mutating func formPredecessor() {
         if current.isLeaf {
             while current.slot == 0, current.node !== root {
@@ -479,14 +321,14 @@ extension BTree4Index {
     }
 }
 
-extension BTree4Index {
-    public static func ==(left: BTree4Index, right: BTree4Index) -> Bool {
-        BTree4Index.validate(left, right)
+extension BTree3Index {
+    public static func ==(left: BTree3Index, right: BTree3Index) -> Bool {
+        BTree3Index.validate(left, right)
         return left.current == right.current
     }
 
-    public static func <(left: BTree4Index, right: BTree4Index) -> Bool {
-        BTree4Index.validate(left, right)
+    public static func <(left: BTree3Index, right: BTree3Index) -> Bool {
+        BTree3Index.validate(left, right)
         switch (left.current.value, right.current.value) {
         case let (.some(a), .some(b)): return a < b
         case (.none, _): return false
@@ -495,8 +337,8 @@ extension BTree4Index {
     }
 }
 
-extension BTree4: SortedSet {
-    public typealias Index = BTree4Index<Element>
+extension BTree3: SortedSet {
+    public typealias Index = BTree3Index<Element>
 
     public var startIndex: Index { return Index(startOf: self) }
     public var endIndex: Index { return Index(endOf: self) }
@@ -533,7 +375,7 @@ extension BTree4: SortedSet {
     }
 }
 
-extension BTree4 {
+extension BTree3 {
     public var count: Int {
         return root.count
     }
@@ -545,11 +387,11 @@ extension Node {
     }
 }
 
-public struct BTree4Iterator<Element: Comparable>: IteratorProtocol {
-    let tree: BTree4<Element>
-    var index: BTree4Index<Element>
+public struct BTree3Iterator<Element: Comparable>: IteratorProtocol {
+    let tree: BTree3<Element>
+    var index: BTree3Index<Element>
 
-    init(_ tree: BTree4<Element>) {
+    init(_ tree: BTree3<Element>) {
         self.tree = tree
         self.index = tree.startIndex
     }
@@ -561,13 +403,13 @@ public struct BTree4Iterator<Element: Comparable>: IteratorProtocol {
     }
 }
 
-extension BTree4 {
-    public func makeIterator() -> BTree4Iterator<Element> {
-        return BTree4Iterator(self)
+extension BTree3 {
+    public func makeIterator() -> BTree3Iterator<Element> {
+        return BTree3Iterator(self)
     }
 }
 
-extension BTree4 {
+extension BTree3 {
     public func validate() {
         _ = root.validate(level: 0)
     }

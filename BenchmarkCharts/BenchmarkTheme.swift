@@ -98,7 +98,10 @@ public struct BenchmarkTheme: Hashable {
         }
     }
 
-    public var hashValue: Int { return name.hashValue }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+    }
+    
     public static func ==(left: BenchmarkTheme, right: BenchmarkTheme) -> Bool {
         return left.name == right.name
     }

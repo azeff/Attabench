@@ -51,21 +51,21 @@ public class BenchmarkProcess {
             benchmark.fail(String(posixError: error))
         }
 
-        func commandLineProcess(_ process: CommandLineProcess, didExitWithState state: CommandLineProcess.ExitState) {
+        func commandLineProcess(_ process: CommandLineProcess, didExitDueTo exitReason: CommandLineProcess.ExitReason, withStatus exitStatus: CommandLineProcess.ExitStatus) {
             precondition(process === benchmark.process)
             benchmark.cleanup()
             guard !benchmark.hasFailed else { return }
-            switch state {
-            case .exit(0):
+            switch (exitReason, exitStatus) {
+            case (.exit, 0):
                 benchmark.delegate.benchmarkDidStop(benchmark)
-            case .exit(let code):
-                benchmark.fail("Process exited with code \(code)")
-            case .uncaughtSignal(SIGTERM):
+            case (.uncaughtSignal, SIGTERM):
                 benchmark.fail("Process terminated")
-            case .uncaughtSignal(SIGKILL):
+            case (.uncaughtSignal, SIGKILL):
                 benchmark.fail("Process killed")
-            case .uncaughtSignal(let signal):
+            case (.uncaughtSignal, let signal):
                 benchmark.fail(String(signal: signal))
+            case (_, let code):
+                benchmark.fail("Process exited with code \(code)")
             }
         }
     }

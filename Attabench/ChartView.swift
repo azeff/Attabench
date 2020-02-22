@@ -3,30 +3,35 @@
 // For licensing information, see the file LICENSE.md in the Git repository above.
 
 import Cocoa
+import Combine
 import BenchmarkModel
 import BenchmarkCharts
-import GlueKit
 
 @IBDesignable
 class ChartView: NSView {
+    
     var documentBasename: String = "Benchmark"
-    private let modelConnector = Connector()
+
+    private var modelCancellables: Set<AnyCancellable> = []
+    
     var model: Attaresult? {
         didSet {
-            modelConnector.disconnect()
+            modelCancellables = []
             if let model = model {
-                modelConnector.connect(model.chartOptionsTick) {
-                    self.render()
-                }
+                model.chartOptionsTick
+                    .sink { [unowned self] _ in self.render() }
+                    .store(in: &modelCancellables)
             }
         }
     }
     
-    private var themeConnection: Connection? = nil
-    var theme: AnyObservableValue<BenchmarkTheme> = .constant(BenchmarkTheme.Predefined.screen) {
+    private var themeCancellables: Set<AnyCancellable> = []
+    
+    var theme = CurrentValueSubject<BenchmarkTheme, Never>(BenchmarkTheme.Predefined.screen) {
         didSet {
-            themeConnection?.disconnect()
-            themeConnection = theme.values.subscribe { [unowned self] _ in self.render() }
+            themeCancellables = []
+            theme.sink { [unowned self] _ in self.render() }
+                .store(in: &themeCancellables)
         }
     }
 

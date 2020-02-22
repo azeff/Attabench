@@ -35,7 +35,7 @@ fileprivate class Node {
 
     deinit {
         elements.deinitialize(count: elementCount)
-        elements.deallocate(capacity: order)
+        elements.deallocate()
     }
 }
 

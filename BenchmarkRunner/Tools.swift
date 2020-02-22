@@ -25,7 +25,7 @@ extension String {
             case 0, EINVAL:
                 break loop
             case ERANGE:
-                p.deallocate(capacity: c)
+                p.deallocate()
                 c *= 2
                 p = .allocate(capacity: c)
             default:
@@ -33,7 +33,7 @@ extension String {
             }
         }
         self = String(cString: p)
-        p.deallocate(capacity: c)
+        p.deallocate()
     }
 
     init(signal: Int32) {

@@ -3,7 +3,7 @@
 // For licensing information, see the file LICENSE.md in the Git repository above.
 
 import Foundation
-import GlueKit
+import Combine
 
 public final class Task: Codable, Hashable {
     public typealias Bounds = BenchmarkModel.Bounds
@@ -11,17 +11,17 @@ public final class Task: Codable, Hashable {
 
     public let name: String
     public internal(set) var samples: [Int: TimeSample] = [:]
-    public let checked: BoolVariable = true
-    public let isRunnable: BoolVariable = false // transient
-    public let sampleCount: IntVariable = 0 // transient
-
+    public let checked = CurrentValueSubject<Bool, Never>(true)
+    public let isRunnable = CurrentValueSubject<Bool, Never>(false)
+    public let sampleCount = CurrentValueSubject<Int, Never>(0)
+  
     enum CodingKey: String, Swift.CodingKey {
         case name
         case samples
         case checked
     }
 
-    public let newMeasurements = Signal<(size: Int, time: Time)>()
+    public let newMeasurements = PassthroughSubject<(size: Int, time: Time), Never>()
 
     public init(name: String) {
         self.name = name
@@ -45,7 +45,9 @@ public final class Task: Codable, Hashable {
     }
 
     public func addMeasurement(_ time: Time, forSize size: Int) {
-        samples.value(for: size, default: TimeSample()).addMeasurement(time)
+        let sample = samples[size, default: TimeSample()]
+        sample.addMeasurement(time)
+        samples[size] = sample
         newMeasurements.send((size, time))
         self.sampleCount.value += 1
     }
@@ -62,8 +64,8 @@ public final class Task: Codable, Hashable {
         return (sizeBounds, timeBounds)
     }
 
-    public var hashValue: Int {
-        return name.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
     }
 
     public static func ==(left: Task, right: Task) -> Bool {
