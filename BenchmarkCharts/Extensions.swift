@@ -7,23 +7,26 @@ import Cocoa
 extension NSBezierPath {
     convenience init(linesBetween points: [CGPoint]) {
         self.init()
-        self.appendLines(between: points)
+        appendLines(between: points)
     }
     
     func appendLines(between points: [CGPoint]) {
-        if points.isEmpty { return }
-        self.move(to: points[0])
+        guard !points.isEmpty else { return }
+        
+        move(to: points[0])
         for point in points.dropFirst() {
-            self.line(to: point)
+            line(to: point)
         }
     }
 
     func setLineDash(_ dashes: [CGFloat]) {
-        self.setLineDash(dashes, count: dashes.count, phase: 0)
+        setLineDash(dashes, count: dashes.count, phase: 0)
     }
 
     func stroke(with params: BenchmarkTheme.LineParams) {
         NSGraphicsContext.saveGraphicsState()
+        defer { NSGraphicsContext.restoreGraphicsState() }
+        
         params.apply(on: self)
         params.color.setStroke()
         if params.shadowRadius > 0 {
@@ -33,8 +36,7 @@ extension NSBezierPath {
             shadow.shadowColor = .black
             shadow.set()
         }
-        self.stroke()
-        NSGraphicsContext.restoreGraphicsState()
+        stroke()
     }
 }
 

@@ -6,17 +6,23 @@ import Cocoa
 
 extension BenchmarkTheme {
     public struct LineParams {
-        let lineWidth: CGFloat
-        let color: NSColor
-        let dash: [CGFloat]
-        let phase: CGFloat
-        let capStyle: NSBezierPath.LineCapStyle
-        let joinStyle: NSBezierPath.LineJoinStyle
-        let shadowRadius: CGFloat
+        public let lineWidth: CGFloat
+        public let color: NSColor
+        public let dash: [CGFloat]
+        public let phase: CGFloat
+        public let capStyle: NSBezierPath.LineCapStyle
+        public let joinStyle: NSBezierPath.LineJoinStyle
+        public let shadowRadius: CGFloat
 
-        init(lineWidth: CGFloat, color: NSColor, dash: [CGFloat] = [], phase: CGFloat = 0,
-             capStyle: NSBezierPath.LineCapStyle = .round, joinStyle: NSBezierPath.LineJoinStyle = .round,
-             shadowRadius: CGFloat = 0) {
+        public init(
+            lineWidth: CGFloat,
+            color: NSColor,
+            dash: [CGFloat] = [],
+            phase: CGFloat = 0,
+            capStyle: NSBezierPath.LineCapStyle = .round,
+            joinStyle: NSBezierPath.LineJoinStyle = .round,
+            shadowRadius: CGFloat = 0
+        ) {
             self.lineWidth = lineWidth
             self.color = color
             self.dash = dash
@@ -26,7 +32,7 @@ extension BenchmarkTheme {
             self.shadowRadius = shadowRadius
         }
 
-        func apply(on path: NSBezierPath) {
+        public func apply(on path: NSBezierPath) {
             path.lineWidth = lineWidth
             path.lineJoinStyle = joinStyle
             path.lineCapStyle = capStyle

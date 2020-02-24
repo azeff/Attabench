@@ -4,13 +4,6 @@
 
 import Foundation
 
-extension DispatchData {
-    init(_ data: Data) {
-        // Data and DispatchData are toll-free bridged in Objective-C, but I don't think we can exploit this in Swift
-        self.init(bytes: UnsafeRawBufferPointer(start: (data as NSData).bytes, count: data.count))
-    }
-}
-
 extension DispatchIO {
     enum Chunk<Payload> {
         case record(Payload)

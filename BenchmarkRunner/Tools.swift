@@ -4,18 +4,6 @@
 
 import Foundation
 
-extension URL {
-    func verifyResourceIsReachable() throws {
-        guard try self.checkResourceIsReachable() else {
-            throw CocoaError.error(.fileNoSuchFile, url: self)
-        }
-    }
-
-    var isResourceReachable: Bool {
-        return (try? self.checkResourceIsReachable()) ?? false
-    }
-}
-
 extension String {
     init(posixError: Int32) {
         var c = 256

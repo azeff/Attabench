@@ -90,8 +90,6 @@ struct BandOption: OptionValue {
     }
 }
 
-
-
 extension Time: OptionValue {
     public init(fromOptionValue string: String) throws {
         guard let value = Time(string) else {

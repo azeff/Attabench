@@ -32,8 +32,8 @@
 		BBC93D1C1F5C3912002E3777 /* RateLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC93D1B1F5C3912002E3777 /* RateLimiter.swift */; };
 		BBC93D1F1F5C49B4002E3777 /* NSImage+Export.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC93D1D1F5C49A1002E3777 /* NSImage+Export.swift */; };
 		BBCA26951F576B5500C6FB74 /* CommandLineProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCA26941F576B5500C6FB74 /* CommandLineProcess.swift */; };
-		BBCA26971F576B9A00C6FB74 /* Dispatch Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCA26961F576B9A00C6FB74 /* Dispatch Extensions.swift */; };
-		BBCA26991F57735300C6FB74 /* FileManager Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCA26981F57735300C6FB74 /* FileManager Extensions.swift */; };
+		BBCA26971F576B9A00C6FB74 /* Dispatch+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCA26961F576B9A00C6FB74 /* Dispatch+Ext.swift */; };
+		BBCA26991F57735300C6FB74 /* FileManager+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCA26981F57735300C6FB74 /* FileManager+Ext.swift */; };
 		BBCA26CC1F585B2300C6FB74 /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCA26CB1F585B2300C6FB74 /* Tools.swift */; };
 		BBCA26CF1F596F8500C6FB74 /* BenchmarkProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCA269A1F57777F00C6FB74 /* BenchmarkProcess.swift */; };
 		BBCA26FB1F59B8A400C6FB74 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9889C81F3F85F200014740 /* Time.swift */; };
@@ -115,7 +115,7 @@
 		BB17BB071E6733C700B05A22 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BB17BB091E6733DA00B05A22 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		BB23CE811F61B476006FC3B3 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		BB23CE8E1F61B991006FC3B3 /* Render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Render.swift; sourceTree = "<group>"; };
+		BB23CE8E1F61B991006FC3B3 /* Attaresult+Render.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attaresult+Render.swift"; sourceTree = "<group>"; };
 		BB35FF981E359756003ABBF3 /* StatusLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusLabel.swift; sourceTree = "<group>"; };
 		BB40F81A1F5C2AE700C5EB75 /* BenchmarkRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkRenderer.swift; sourceTree = "<group>"; };
 		BB40F81C1F5C2D6600C5EB75 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -151,8 +151,8 @@
 		BBC93D1B1F5C3912002E3777 /* RateLimiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimiter.swift; sourceTree = "<group>"; };
 		BBC93D1D1F5C49A1002E3777 /* NSImage+Export.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Export.swift"; sourceTree = "<group>"; };
 		BBCA26941F576B5500C6FB74 /* CommandLineProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineProcess.swift; sourceTree = "<group>"; };
-		BBCA26961F576B9A00C6FB74 /* Dispatch Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dispatch Extensions.swift"; sourceTree = "<group>"; };
-		BBCA26981F57735300C6FB74 /* FileManager Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager Extensions.swift"; sourceTree = "<group>"; };
+		BBCA26961F576B9A00C6FB74 /* Dispatch+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dispatch+Ext.swift"; sourceTree = "<group>"; };
+		BBCA26981F57735300C6FB74 /* FileManager+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Ext.swift"; sourceTree = "<group>"; };
 		BBCA269A1F57777F00C6FB74 /* BenchmarkProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkProcess.swift; sourceTree = "<group>"; };
 		BBCA26CB1F585B2300C6FB74 /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 		BBCA26DA1F59B82C00C6FB74 /* BenchmarkCharts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BenchmarkCharts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -244,10 +244,10 @@
 		BB23CE801F61B476006FC3B3 /* attachart */ = {
 			isa = PBXGroup;
 			children = (
-				BB23CE811F61B476006FC3B3 /* main.swift */,
-				BB23CE8E1F61B991006FC3B3 /* Render.swift */,
-				BB55F5771F61CF1E00E9FF6D /* Options.swift */,
 				F6ABC87E240343A4002799E9 /* complain.swift */,
+				BB23CE811F61B476006FC3B3 /* main.swift */,
+				BB55F5771F61CF1E00E9FF6D /* Options.swift */,
+				BB23CE8E1F61B991006FC3B3 /* Attaresult+Render.swift */,
 			);
 			path = attachart;
 			sourceTree = "<group>";
@@ -256,9 +256,9 @@
 			isa = PBXGroup;
 			children = (
 				BBCA269A1F57777F00C6FB74 /* BenchmarkProcess.swift */,
-				BBCA26981F57735300C6FB74 /* FileManager Extensions.swift */,
-				BBCA26961F576B9A00C6FB74 /* Dispatch Extensions.swift */,
 				BBCA26941F576B5500C6FB74 /* CommandLineProcess.swift */,
+				BBCA26961F576B9A00C6FB74 /* Dispatch+Ext.swift */,
+				BBCA26981F57735300C6FB74 /* FileManager+Ext.swift */,
 				BBCA26CB1F585B2300C6FB74 /* Tools.swift */,
 				BB4F15611F409882003C05C3 /* Info.plist */,
 			);
@@ -303,13 +303,13 @@
 				BB8E0E091E3262C600505773 /* BenchmarkChart.swift */,
 				BB40F81A1F5C2AE700C5EB75 /* BenchmarkRenderer.swift */,
 				BB855CCE1F5C041D008849E2 /* BenchmarkTheme.swift */,
-				BB855CC21F5C0323008849E2 /* Size+Labels.swift */,
-				BB855CC41F5C0359008849E2 /* Gridline.swift */,
 				BB855CC61F5C0375008849E2 /* ChartScales.swift */,
-				BB855CC81F5C039F008849E2 /* LineParams.swift */,
-				BB855CCA1F5C03B8008849E2 /* TextParams.swift */,
 				BB855CC01F5C0303008849E2 /* Extensions.swift */,
+				BB855CC41F5C0359008849E2 /* Gridline.swift */,
+				BB855CC81F5C039F008849E2 /* LineParams.swift */,
 				BBC93D1D1F5C49A1002E3777 /* NSImage+Export.swift */,
+				BB855CC21F5C0323008849E2 /* Size+Labels.swift */,
+				BB855CCA1F5C03B8008849E2 /* TextParams.swift */,
 				BBCA26DD1F59B82C00C6FB74 /* Info.plist */,
 			);
 			path = BenchmarkCharts;
@@ -548,8 +548,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BBCA26CC1F585B2300C6FB74 /* Tools.swift in Sources */,
-				BBCA26991F57735300C6FB74 /* FileManager Extensions.swift in Sources */,
-				BBCA26971F576B9A00C6FB74 /* Dispatch Extensions.swift in Sources */,
+				BBCA26991F57735300C6FB74 /* FileManager+Ext.swift in Sources */,
+				BBCA26971F576B9A00C6FB74 /* Dispatch+Ext.swift in Sources */,
 				BBCA26951F576B5500C6FB74 /* CommandLineProcess.swift in Sources */,
 				BBCA26CF1F596F8500C6FB74 /* BenchmarkProcess.swift in Sources */,
 			);

@@ -52,8 +52,7 @@ public struct BenchmarkRenderer {
             let split = chartRect.divided(atDistance: height, from: .maxYEdge)
             titleRect = split.slice
             chartRect = split.remainder
-        }
-        else {
+        } else {
             titleRect = nil
         }
 
@@ -65,8 +64,7 @@ public struct BenchmarkRenderer {
                                           from: .minYEdge)
             brandingRect = split.slice
             chartRect = split.remainder
-        }
-        else {
+        } else {
             brandingRect = nil
         }
 
@@ -111,8 +109,7 @@ public struct BenchmarkRenderer {
             drawErrorBands()
             drawCurves()
             drawLegendContents(with: legendLayout)
-        }
-        else {
+        } else {
             drawErrorBands()
             drawCurves()
         }
@@ -135,7 +132,8 @@ public struct BenchmarkRenderer {
                 .font: theme.title.font,
                 .foregroundColor: theme.title.color,
                 .paragraphStyle: paragraphStyle,
-                ])
+            ]
+        )
         title.draw(with: titleRect!, options: .usesLineFragmentOrigin)
     }
 
@@ -262,7 +260,7 @@ public struct BenchmarkRenderer {
             guard let lineParams = theme.lineParams(index, chart.curves.count).first else { continue }
             let color = lineParams.color.withAlphaComponent(lineParams.color.alphaComponent * 0.3)
             let curve = chart.curves[index]
-            let path = NSBezierPath(linesBetween: curve.topBand + curve.bottomBand.reversed())
+            let path = NSBezierPath(linesBetween: curve[.top] + curve[.bottom].reversed())
             path.transform(using: chartTransform)
             color.setFill()
             path.fill()
@@ -278,7 +276,7 @@ public struct BenchmarkRenderer {
             for index in 0 ..< chart.curves.count {
                 guard lineParams[index].count > pass else { continue }
                 let curve = chart.curves[index]
-                let path = NSBezierPath(linesBetween: curve.centerBand)
+                let path = NSBezierPath(linesBetween: curve[.center])
                 path.transform(using: chartTransform)
                 path.stroke(with: lineParams[index][pass])
             }
@@ -318,8 +316,7 @@ public struct BenchmarkRenderer {
                 path.line(to: CGPoint(x: theme.legendPadding + sampleWidth, y: y + bounds.midY))
                 extraWidth = sampleWidth + 6
                 pos = CGPoint(x: theme.legendPadding + extraWidth, y: y)
-            }
-            else {
+            } else {
                 title = NSMutableAttributedString(string: "◼︎ " + curve.title, attributes: attributes)
                 title.setAttributes([.foregroundColor: lp.color],
                                     range: NSRange(0 ..< 1))
@@ -389,6 +386,6 @@ public struct BenchmarkRenderer {
 
 extension BenchmarkRenderer: CustomPlaygroundDisplayConvertible {
     public var playgroundDescription: Any {
-        return image
+        image
     }
 }

@@ -4,14 +4,15 @@
 
 import Foundation
 
+func complain(_ things: Any..., separator: String = " ", terminator: String = "\n") {
+    let message = things.lazy.map { "\($0)" }.joined(separator: separator)
+    print(message, terminator: terminator, to: &standardErrorStream)
+}
+
+private var standardErrorStream = ErrorStream()
+
 private struct ErrorStream: TextOutputStream {
     mutating func write(_ string: String) {
         fputs(string, stderr)
     }
-}
-private var standardErrorStream = ErrorStream()
-
-func complain(_ things: Any..., separator: String = " ", terminator: String = "\n") {
-    let message = things.lazy.map { "\($0)" }.joined(separator: separator)
-    print(message, terminator: terminator, to: &standardErrorStream)
 }

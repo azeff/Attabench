@@ -111,7 +111,8 @@ public class CommandLineProcess {
     }
 
     public func sendToStandardInput(_ data: Data) {
-        stdinChannel.write(offset: 0, data: DispatchData(data), queue: delegateQueue) { [weak self] done, data, err in
+        let data = data.withUnsafeBytes(DispatchData.init)
+        stdinChannel.write(offset: 0, data: data, queue: delegateQueue) { [weak self] done, data, err in
             guard let this = self else { return }
             if done {
                 this.delegate.commandLineProcess(this, channel: .input, didFailWithError: err)

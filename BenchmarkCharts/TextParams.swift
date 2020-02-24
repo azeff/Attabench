@@ -6,17 +6,17 @@ import Cocoa
 
 extension BenchmarkTheme {
     public struct TextParams {
-        var font: NSFont
-        var color: NSColor
+        public var font: NSFont
+        public var color: NSColor
 
-        var attributes: [NSAttributedString.Key: Any] {
-            return [.foregroundColor: color,
-                    .font: font]
+        public var attributes: [NSAttributedString.Key: Any] {
+            [.foregroundColor: color,
+             .font: font]
         }
 
-        var fontName: String {
+        public var fontName: String {
             get {
-                return font.fontName
+                font.fontName
             }
             set {
                 guard let font = NSFont(name: newValue, size: font.pointSize) else {

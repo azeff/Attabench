@@ -9,57 +9,19 @@
 import Cocoa
 import BenchmarkModel
 
-func min<C: Comparable>(_ a: C?, _ b: C?) -> C? {
-    switch (a, b) {
-    case let (a?, b?): return Swift.min(a, b)
-    case let (a?, nil): return a
-    case let (nil, b?): return b
-    case (nil, nil): return nil
-    }
-}
-
-func max<C: Comparable>(_ a: C?, _ b: C?) -> C? {
-    switch (a, b) {
-    case let (a?, b?): return Swift.max(a, b)
-    case let (a?, nil): return a
-    case let (nil, b?): return b
-    case (nil, nil): return nil
-    }
-}
-
-enum BandIndex {
+public enum BandIndex: CaseIterable {
     case top
     case center
     case bottom
-
-    static let all: [BandIndex] = [.top, .center, .bottom]
 }
 
 struct Curve {
     var title: String
-    var topBand: [CGPoint] = []
-    var centerBand: [CGPoint] = []
-    var bottomBand: [CGPoint] = []
+    var band: [BandIndex: [CGPoint]] = [:]
 
-    init(title: String) {
-        self.title = title
-    }
-
-    subscript(_ b: BandIndex) -> [CGPoint] {
-        get {
-            switch b {
-            case .top: return topBand
-            case .center: return centerBand
-            case .bottom: return bottomBand
-            }
-        }
-        set {
-            switch b {
-            case .top: topBand = newValue
-            case .center: centerBand = newValue
-            case .bottom: bottomBand = newValue
-            }
-        }
+    subscript(_ bandIndex: BandIndex) -> [CGPoint] {
+        get { band[bandIndex, default: []] }
+        set { band[bandIndex] = newValue }
     }
 }
 
@@ -69,37 +31,15 @@ struct RawCurve {
         let time: Time
     }
     var title: String
-    var topBand: [Sample] = []
-    var centerBand: [Sample] = []
-    var bottomBand: [Sample] = []
+    var band: [BandIndex: [Sample]] = [:]
 
-    init(title: String) {
-        self.title = title
+    subscript(_ bandIndex: BandIndex) -> [Sample] {
+        get { band[bandIndex, default: []] }
+        set { band[bandIndex] = newValue }
     }
 
-    subscript(_ b: BandIndex) -> [Sample] {
-        get {
-            switch b {
-            case .top: return topBand
-            case .center: return centerBand
-            case .bottom: return bottomBand
-            }
-        }
-        set {
-            switch b {
-            case .top: topBand = newValue
-            case .center: centerBand = newValue
-            case .bottom: bottomBand = newValue
-            }
-        }
-    }
-
-    mutating func append(_ sample: Sample, at bi: BandIndex) {
-        switch bi {
-        case .top: topBand.append(sample)
-        case .center: centerBand.append(sample)
-        case .bottom: bottomBand.append(sample)
-        }
+    mutating func append(_ sample: Sample, at bandIndex: BandIndex) {
+        self[bandIndex].append(sample)
     }
 }
 
@@ -111,9 +51,7 @@ public struct BenchmarkChart {
         public var amortizedTime = true
         public var logarithmicTime = true
         public var logarithmicSize = true
-        public var topBand: Band? = nil
-        public var centerBand: Band? = .average
-        public var bottomBand: Band? = nil
+        public var band: [BandIndex: Band] = [.center: .average]
 
         public var displaySizeRange: ClosedRange<Int>? = nil
         public var displayAllMeasuredSizes = true
@@ -123,28 +61,16 @@ public struct BenchmarkChart {
 
         public init() {}
         
-        subscript(_ b: BandIndex) -> Band? {
-            get {
-                switch b {
-                case .top: return topBand
-                case .center: return centerBand
-                case .bottom: return bottomBand
-                }
-            }
-            set {
-                switch b {
-                case .top: topBand = newValue
-                case .center: centerBand = newValue
-                case .bottom: bottomBand = newValue
-                }
-            }
+        subscript(_ bandIndex: BandIndex) -> Band? {
+            get { band[bandIndex] }
+            set { band[bandIndex] = newValue }
         }
     }
 
     public let title: String
     public let tasks: [String]
     public let options: Options
-    private(set) var curves: [Curve] = []
+    let curves: [Curve]
     let sizeScale: ChartScale
     let timeScale: ChartScale
 
@@ -154,18 +80,6 @@ public struct BenchmarkChart {
         self.title = title
         self.tasks = tasks.map { $0.name }
         self.options = options
-
-        #if false
-            // TODO Move this
-            if amortized {
-                self.title = suite.benchmark.descriptiveAmortizedTitle
-                    ?? suite.benchmark.descriptiveTitle?.appending(" (amortized)")
-                    ?? suite.title.appending(" (amortized)")
-            }
-            else {
-                self.title = suite.benchmark.descriptiveTitle ?? suite.title
-            }
-        #endif
 
         var minSize = options.displaySizeRange?.lowerBound
         var maxSize = options.displaySizeRange?.upperBound
@@ -177,11 +91,11 @@ public struct BenchmarkChart {
         for task in tasks {
             var rawCurve = RawCurve(title: task.name)
             for (size, sample) in task.samples.sorted(by: { $0.key < $1.key }) {
-                for bi in BandIndex.all {
-                    guard let band = options[bi] else { continue }
+                for bandIndex in BandIndex.allCases {
+                    guard let band = options[bandIndex] else { continue }
                     guard let time = sample[band] else { continue }
                     let t = options.amortizedTime ? time / size : time
-                    rawCurve.append(.init(size: size, time: t), at: bi)
+                    rawCurve.append(.init(size: size, time: t), at: bandIndex)
                     if options.displayAllMeasuredSizes {
                         minSize = min(minSize, size)
                         maxSize = max(maxSize, size)
@@ -200,44 +114,40 @@ public struct BenchmarkChart {
             let xrange = Double(minSize) ... Double(maxSize)
             if options.logarithmicSize {
                 let labeler: (Int) -> String = { value in (1 << value).sizeLabel }
-                self.sizeScale = LogarithmicScale(xrange, decimal: false, labeler: labeler)
-            }
-            else {
+                sizeScale = LogarithmicScale(xrange, decimal: false, labeler: labeler)
+            } else {
                 let labeler: (Double) -> String = { value in Int(value).sizeLabel }
-                self.sizeScale = LinearScale(xrange, decimal: false, labeler: labeler)
+                sizeScale = LinearScale(xrange, decimal: false, labeler: labeler)
             }
-        }
-        else {
-            self.sizeScale = EmptyScale()
+        } else {
+            sizeScale = EmptyScale()
         }
 
         if let minTime = minTime, let maxTime = maxTime {
             let yrange = minTime.seconds ... maxTime.seconds
             if options.logarithmicTime {
                 let labeler: (Int) -> String = { value in "\(Time(orderOfMagnitude: value))" }
-                self.timeScale = LogarithmicScale(yrange, decimal: true, labeler: labeler)
-            }
-            else {
+                timeScale = LogarithmicScale(yrange, decimal: true, labeler: labeler)
+            } else {
                 let labeler: (Double) -> String = { value in "\(Time(value))" }
-                self.timeScale = LinearScale(yrange, decimal: true, labeler: labeler)
+                timeScale = LinearScale(yrange, decimal: true, labeler: labeler)
             }
-        }
-        else {
+        } else {
             // Empty chart.
-            self.timeScale = EmptyScale()
+            timeScale = EmptyScale()
         }
 
         // Calculate curves.
-        func transform(_ s: RawCurve.Sample) -> CGPoint {
-            return CGPoint(x: sizeScale.position(for: Double(s.size)),
-                           y: timeScale.position(for: s.time.seconds))
+        let transform: (RawCurve.Sample) -> CGPoint = { [sizeScale, timeScale] sample in
+            CGPoint(x: sizeScale.position(for: Double(sample.size)),
+                    y: timeScale.position(for: sample.time.seconds))
         }
-        for raw in rawCurves {
-            var curve = Curve(title: raw.title)
-            curve.topBand = raw.topBand.map(transform)
-            curve.centerBand = raw.centerBand.map(transform)
-            curve.bottomBand = raw.bottomBand.map(transform)
-            curves.append(curve)
+        
+        curves = rawCurves.map { raw in
+            Curve(
+                title: raw.title,
+                band: raw.band.mapValues { $0.map(transform) }
+            )
         }
     }
 }
@@ -253,5 +163,23 @@ extension BenchmarkChart: CustomPlaygroundDisplayConvertible {
         let theme = BenchmarkTheme.Predefined.screen
         let renderer = BenchmarkRenderer(chart: self, theme: theme, options: options, in: rect)
         return renderer.image
+    }
+}
+
+private func min<C: Comparable>(_ a: C?, _ b: C?) -> C? {
+    switch (a, b) {
+    case let (a?, b?): return Swift.min(a, b)
+    case let (a?, nil): return a
+    case let (nil, b?): return b
+    case (nil, nil): return nil
+    }
+}
+
+private func max<C: Comparable>(_ a: C?, _ b: C?) -> C? {
+    switch (a, b) {
+    case let (a?, b?): return Swift.max(a, b)
+    case let (a?, nil): return a
+    case let (nil, b?): return b
+    case (nil, nil): return nil
     }
 }

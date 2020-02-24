@@ -4,17 +4,8 @@
 
 import Cocoa
 
-#if OBJCIO
-    private let labelFontName = "Tiempos Text"
-    private let monoFontName = "Akkurat TT"
-#elseif LORENTEY
-    private let labelFontName = "Palatino"
-    private let monoFontName = "InputSansNarrow-Regular"
-#else
-    private let labelFontName = "Helvetica-Light"
-    private let monoFontName = "Menlo"
-#endif
-
+private let labelFontName = "Helvetica-Light"
+private let monoFontName = "Menlo"
 private let presentationSize = CGSize(width: 1280, height: 720)
 
 private func colorLineParams(index: Int, count: Int, lineWidth: CGFloat, hairLine: Bool, shadowRadius: CGFloat = 0) -> [BenchmarkTheme.LineParams] {
@@ -22,8 +13,7 @@ private func colorLineParams(index: Int, count: Int, lineWidth: CGFloat, hairLin
     if count > 6 {
         color = NSColor(calibratedHue: CGFloat(index) / CGFloat(count),
                         saturation: 1, brightness: 1, alpha: 1)
-    }
-    else {
+    } else {
         // Use stable colors when possible.
         // These particular ones are nice because people with most forms of color blindness can still
         // differentiate them.
@@ -37,11 +27,11 @@ private func colorLineParams(index: Int, count: Int, lineWidth: CGFloat, hairLin
         default: fatalError()
         }
     }
+    
     if hairLine {
         return [BenchmarkTheme.LineParams(lineWidth: lineWidth, color: color, shadowRadius: shadowRadius),
                 BenchmarkTheme.LineParams(lineWidth: 0.5, color: .black)]
-    }
-    else {
+    } else {
         return [BenchmarkTheme.LineParams(lineWidth: lineWidth, color: color, shadowRadius: shadowRadius)]
     }
 }
@@ -59,7 +49,7 @@ private func monoLineParams(index: Int, count: Int, lineWidth: CGFloat) -> [Benc
 }
 
 
-public struct BenchmarkTheme: Hashable {
+public struct BenchmarkTheme: Equatable {
     public var name: String
     public var imageSize: CGSize? = nil
     public var margins: (x: CGFloat, y: CGFloat) = (12, 12)
@@ -98,14 +88,12 @@ public struct BenchmarkTheme: Hashable {
         }
     }
 
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
+    public static func == (left: BenchmarkTheme, right: BenchmarkTheme) -> Bool {
+        left.name == right.name
     }
-    
-    public static func ==(left: BenchmarkTheme, right: BenchmarkTheme) -> Bool {
-        return left.name == right.name
-    }
+}
 
+extension BenchmarkTheme {
     public enum Predefined {
         public static let screen = BenchmarkTheme(name: "Screen")
         
@@ -176,7 +164,7 @@ public struct BenchmarkTheme: Hashable {
             presentation,
             colorPrint,
             monochromePrint,
-            ]
+        ]
 
         public static func theme(named name: String) -> BenchmarkTheme? {
             return themes.first(where: { $0.name == name })

@@ -119,8 +119,7 @@ public class BenchmarkProcess {
                     self.processReport(data)
                 }
             }
-        }
-        catch {
+        } catch {
             try? fm.removeItem(at: temporaryFolder)
             throw error
         }
@@ -175,12 +174,10 @@ public class BenchmarkProcess {
             case let .finish(task: task, size: size, time: time):
                 delegate.benchmark(self, didMeasureTask: task, atSize: size, withResult: Time(time))
             }
-        }
-        catch {
+        } catch {
             if let string = String(data: data, encoding: .utf8) {
                 fail("Corrupt report received: \(string)")
-            }
-            else {
+            } else {
                 fail("Corrupt report received: \(data)")
             }
         }

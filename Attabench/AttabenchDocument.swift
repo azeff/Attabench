@@ -1578,9 +1578,9 @@ extension AttabenchDocument {
         }
         options.displayAllMeasuredTimes = model.value.displayIncludeAllMeasuredTimes.value
 
-        options.topBand = model.value.topBand.value
-        options.centerBand = model.value.centerBand.value
-        options.bottomBand = model.value.bottomBand.value
+        options.band[.top] = model.value.topBand.value
+        options.band[.center] = model.value.centerBand.value
+        options.band[.bottom] = model.value.bottomBand.value
 
         chartView.chart = BenchmarkChart(title: "", tasks: tasks, options: options)
     }
