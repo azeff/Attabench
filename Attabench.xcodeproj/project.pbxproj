@@ -55,6 +55,8 @@
 		F6ABC87F240343A4002799E9 /* complain.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC87E240343A4002799E9 /* complain.swift */; };
 		F6ABC88124034425002799E9 /* ClosedRange+Union.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC88024034425002799E9 /* ClosedRange+Union.swift */; };
 		F6ABC89F240439FA002799E9 /* UTI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC89E240439FA002799E9 /* UTI.swift */; };
+		F6ABC8A324046240002799E9 /* TaskFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC8A224046240002799E9 /* TaskFilter.swift */; };
+		F6ABC8A6240462C5002799E9 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC8A5240462C5002799E9 /* Binding.swift */; };
 		F6ACE9572402A74A005A20FE /* Benchmarking in Frameworks */ = {isa = PBXBuildFile; productRef = F6ACE9562402A74A005A20FE /* Benchmarking */; };
 		F6ACE9592402A758005A20FE /* Benchmarking in Frameworks */ = {isa = PBXBuildFile; productRef = F6ACE9582402A758005A20FE /* Benchmarking */; };
 		F6D815382400651D0024C899 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = F6D815372400651D0024C899 /* BigInt */; };
@@ -167,6 +169,8 @@
 		F6ABC87E240343A4002799E9 /* complain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = complain.swift; sourceTree = "<group>"; };
 		F6ABC88024034425002799E9 /* ClosedRange+Union.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClosedRange+Union.swift"; sourceTree = "<group>"; };
 		F6ABC89E240439FA002799E9 /* UTI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTI.swift; sourceTree = "<group>"; };
+		F6ABC8A224046240002799E9 /* TaskFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFilter.swift; sourceTree = "<group>"; };
+		F6ABC8A5240462C5002799E9 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,19 +273,20 @@
 			isa = PBXGroup;
 			children = (
 				F6ABC8A024043A14002799E9 /* Assets */,
+				F6ABC8A42404624D002799E9 /* IB */,
 				F6ABC8A124043A1D002799E9 /* SupportingFiles */,
 				BB65B0F51F59BBA5007EB717 /* AppDelegate.swift */,
 				BB65B0F71F59BBA5007EB717 /* AttabenchDocument.swift */,
-				BB65B0F91F59BBA5007EB717 /* AttabenchDocument.xib */,
-				BBC93D1B1F5C3912002E3777 /* RateLimiter.swift */,
-				BBCC9FBB1F5B00F400AE36DE /* TaskCellView.swift */,
-				BBCC9FB51F5AFA6A00AE36DE /* CombineTableViewController.swift */,
+				F6ABC8A5240462C5002799E9 /* Binding.swift */,
 				BB855CD11F5C2436008849E2 /* ChartView.swift */,
 				BB855CBE1F5C00B4008849E2 /* ChartView+Dragging.swift */,
 				BBCC9FB01F5AE11100AE36DE /* ColoredView.swift */,
+				BBCC9FB51F5AFA6A00AE36DE /* CombineTableViewController.swift */,
+				BBC93D1B1F5C3912002E3777 /* RateLimiter.swift */,
 				BB35FF981E359756003ABBF3 /* StatusLabel.swift */,
+				BBCC9FBB1F5B00F400AE36DE /* TaskCellView.swift */,
+				F6ABC8A224046240002799E9 /* TaskFilter.swift */,
 				F6ABC89E240439FA002799E9 /* UTI.swift */,
-				BB65B0FE1F59BBA5007EB717 /* MainMenu.xib */,
 			);
 			path = Attabench;
 			sourceTree = "<group>";
@@ -344,6 +349,15 @@
 				BB65B1021F59BBA5007EB717 /* Attabench.entitlements */,
 			);
 			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		F6ABC8A42404624D002799E9 /* IB */ = {
+			isa = PBXGroup;
+			children = (
+				BB65B0F91F59BBA5007EB717 /* AttabenchDocument.xib */,
+				BB65B0FE1F59BBA5007EB717 /* MainMenu.xib */,
+			);
+			path = IB;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -497,10 +511,9 @@
 			};
 			buildConfigurationList = BB1DA9C81E2E5923000F2B03 /* Build configuration list for PBXProject "Attabench" */;
 			compatibilityVersion = "Xcode 11.4";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
@@ -579,8 +592,10 @@
 				F6ABC87F240343A4002799E9 /* complain.swift in Sources */,
 				BB855CBF1F5C00B5008849E2 /* ChartView+Dragging.swift in Sources */,
 				BBCC9FB61F5AFA6A00AE36DE /* CombineTableViewController.swift in Sources */,
+				F6ABC8A324046240002799E9 /* TaskFilter.swift in Sources */,
 				F6ABC89F240439FA002799E9 /* UTI.swift in Sources */,
 				BB855CD21F5C2436008849E2 /* ChartView.swift in Sources */,
+				F6ABC8A6240462C5002799E9 /* Binding.swift in Sources */,
 				BB65B0F81F59BBA5007EB717 /* AttabenchDocument.swift in Sources */,
 				BBCC9FBC1F5B00F400AE36DE /* TaskCellView.swift in Sources */,
 				BB65B0F61F59BBA5007EB717 /* AppDelegate.swift in Sources */,

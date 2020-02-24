@@ -55,7 +55,7 @@ class TaskCellView: NSTableCellView {
         
         // FIXME: EK - Signalling about changes in a Task model. To update chart config in response
         // This is uuuugly as hell
-        context.model.value.tasks.value = context.model.value.tasks.value
+        context.model.tasks.send(context.model.tasks.value)
     }
     
     private func bindTask() {
