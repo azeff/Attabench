@@ -17,7 +17,26 @@ extension BigInt {
 }
 
 public struct Time: CustomStringConvertible, LosslessStringConvertible, ExpressibleByFloatLiteral, Comparable, Codable {
+
+    public static let second = Time(picoseconds: BigInt(1e12))
+    public static let millisecond = Time(picoseconds: BigInt(1e9))
+    public static let microsecond = Time(picoseconds: BigInt(1e6))
+    public static let nanosecond = Time(picoseconds: BigInt(1e3))
+    public static let picosecond = Time(picoseconds: 1)
+    public static let zero = Time(picoseconds: 0)
+
     var picoseconds: BigInt
+
+    private static let scaleFromSuffix: [String: Time] = [
+        "": .second,
+        "s": .second,
+        "ms": .millisecond,
+        "µs": .microsecond,
+        "us": .microsecond,
+        "ns": .nanosecond,
+        "ps": .picosecond
+    ]
+    private static let floatingPointCharacterSet = CharacterSet(charactersIn: "+-0123456789.e")
 
     public init(floatLiteral value: Double) {
         self.init(value)
@@ -26,13 +45,16 @@ public struct Time: CustomStringConvertible, LosslessStringConvertible, Expressi
     public init(picoseconds: BigInt) {
         self.picoseconds = picoseconds
     }
+    
     public init(_ timeInterval: TimeInterval) {
         self.picoseconds = BigInt(timeInterval * picosecondsPerSecond)
     }
+    
     public init(orderOfMagnitude order: Int) {
         if order < -12 { self.picoseconds = 0; return }
         self.picoseconds = BigInt(10).power(order + 12)
     }
+    
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         guard let picoseconds = BigInt(try container.decode(String.self), radix: 10) else {
@@ -49,24 +71,6 @@ public struct Time: CustomStringConvertible, LosslessStringConvertible, Expressi
     public var seconds: TimeInterval {
         return TimeInterval(picoseconds) / picosecondsPerSecond
     }
-
-    public static let second = Time(picoseconds: BigInt(1e12))
-    public static let millisecond = Time(picoseconds: BigInt(1e9))
-    public static let microsecond = Time(picoseconds: BigInt(1e6))
-    public static let nanosecond = Time(picoseconds: BigInt(1e3))
-    public static let picosecond = Time(picoseconds: 1)
-    public static let zero = Time(picoseconds: 0)
-
-    private static let scaleFromSuffix: [String: Time] = [
-        "": .second,
-        "s": .second,
-        "ms": .millisecond,
-        "µs": .microsecond,
-        "us": .microsecond,
-        "ns": .nanosecond,
-        "ps": .picosecond
-    ]
-    private static let floatingPointCharacterSet = CharacterSet(charactersIn: "+-0123456789.e")
 
     public init?(_ description: String) {
         var description = description.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -94,13 +98,6 @@ public struct Time: CustomStringConvertible, LosslessStringConvertible, Expressi
         return String(format: "%gs", seconds.rounded())
     }
 
-    public static func ==(left: Time, right: Time) -> Bool {
-        return left.picoseconds == right.picoseconds
-    }
-    public static func <(left: Time, right: Time) -> Bool {
-        return left.picoseconds < right.picoseconds
-    }
-
     public func dividingWithRounding<I: BinaryInteger>(by divisor: I) -> Time {
         return Time(picoseconds: picoseconds.dividingWithRounding(by: divisor))
     }
@@ -110,42 +107,39 @@ public struct Time: CustomStringConvertible, LosslessStringConvertible, Expressi
     }
 }
 
-public func +(left: Time, right: Time) -> Time {
-    return Time(picoseconds: left.picoseconds + right.picoseconds)
-}
-public func +=(left: inout Time, right: Time) {
-    left.picoseconds += right.picoseconds
-}
-public func -(left: Time, right: Time) -> Time {
-    return Time(picoseconds: left.picoseconds - right.picoseconds)
-}
-public func -=(left: inout Time, right: Time) {
-    left.picoseconds -= right.picoseconds
-}
-public func *<I: BinaryInteger>(left: I, right: Time) -> Time {
-    return Time(picoseconds: BigInt(left) * right.picoseconds)
-}
-public func /<I: BinaryInteger>(left: Time, right: I) -> Time {
-    return Time(picoseconds: left.picoseconds / BigInt(right))
-}
-public func *(left: Time, right: Time) -> TimeSquared {
-    return TimeSquared(value: left.picoseconds * right.picoseconds)
-}
-public func *<I: BinaryInteger>(left: I, right: TimeSquared) -> TimeSquared {
-    return TimeSquared(value: BigInt(left) * right.value)
-}
+extension Time {
+    
+    public static func < (left: Time, right: Time) -> Bool {
+        return left.picoseconds < right.picoseconds
+    }
 
-public func +(left: TimeSquared, right: TimeSquared) -> TimeSquared {
-    return TimeSquared(value: left.value + right.value)
-}
-public func +=(left: inout TimeSquared, right: TimeSquared) {
-    left.value += right.value
-}
-public func -(left: TimeSquared, right: TimeSquared) -> TimeSquared {
-    return TimeSquared(value: left.value - right.value)
-}
-public func -=(left: inout TimeSquared, right: TimeSquared) {
-    left.value -= right.value
+    public static func + (left: Time, right: Time) -> Time {
+        return Time(picoseconds: left.picoseconds + right.picoseconds)
+    }
+
+    public static func += (left: inout Time, right: Time) {
+        left.picoseconds += right.picoseconds
+    }
+
+    public static func - (left: Time, right: Time) -> Time {
+        return Time(picoseconds: left.picoseconds - right.picoseconds)
+    }
+
+    public static func -= (left: inout Time, right: Time) {
+        left.picoseconds -= right.picoseconds
+    }
+
+    public static func * <I: BinaryInteger>(left: I, right: Time) -> Time {
+        return Time(picoseconds: BigInt(left) * right.picoseconds)
+    }
+
+    public static func / <I: BinaryInteger>(left: Time, right: I) -> Time {
+        return Time(picoseconds: left.picoseconds / BigInt(right))
+    }
+
+    public static func * (left: Time, right: Time) -> TimeSquared {
+        return TimeSquared(value: left.picoseconds * right.picoseconds)
+    }
 }
 
 public struct TimeSquared: Comparable, Codable {
@@ -177,11 +171,31 @@ public struct TimeSquared: Comparable, Codable {
     public func dividingWithRounding<I: BinaryInteger>(by divisor: I) -> TimeSquared {
         return TimeSquared(value: value.dividingWithRounding(by: divisor))
     }
+}
 
-    public static func ==(left: TimeSquared, right: TimeSquared) -> Bool {
-        return left.value == right.value
-    }
+extension TimeSquared {
+    
     public static func <(left: TimeSquared, right: TimeSquared) -> Bool {
         return left.value < right.value
+    }
+
+    public static func * <I: BinaryInteger>(left: I, right: TimeSquared) -> TimeSquared {
+        return TimeSquared(value: BigInt(left) * right.value)
+    }
+
+    public static func + (left: TimeSquared, right: TimeSquared) -> TimeSquared {
+        return TimeSquared(value: left.value + right.value)
+    }
+
+    public static func += (left: inout TimeSquared, right: TimeSquared) {
+        left.value += right.value
+    }
+
+    public static func - (left: TimeSquared, right: TimeSquared) -> TimeSquared {
+        return TimeSquared(value: left.value - right.value)
+    }
+
+    public static func -= (left: inout TimeSquared, right: TimeSquared) {
+        left.value -= right.value
     }
 }

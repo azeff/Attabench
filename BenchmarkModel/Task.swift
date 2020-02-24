@@ -6,22 +6,21 @@ import Foundation
 import Combine
 
 public final class Task: Codable, Hashable {
-    public typealias Bounds = BenchmarkModel.Bounds
+    
     public typealias Band = TimeSample.Band
 
     public let name: String
-    public internal(set) var samples: [Int: TimeSample] = [:]
+    public private(set) var samples: [Int: TimeSample] = [:]
     public let checked = CurrentValueSubject<Bool, Never>(true)
     public let isRunnable = CurrentValueSubject<Bool, Never>(false)
     public let sampleCount = CurrentValueSubject<Int, Never>(0)
-  
+    public let newMeasurements = PassthroughSubject<(size: Int, time: Time), Never>()
+
     enum CodingKey: String, Swift.CodingKey {
         case name
         case samples
         case checked
     }
-
-    public let newMeasurements = PassthroughSubject<(size: Int, time: Time), Never>()
 
     public init(name: String) {
         self.name = name
@@ -45,31 +44,23 @@ public final class Task: Codable, Hashable {
     }
 
     public func addMeasurement(_ time: Time, forSize size: Int) {
-        let sample = samples[size, default: TimeSample()]
+        let sample = samples[size, default: TimeSample(time: time)]
         sample.addMeasurement(time)
         samples[size] = sample
         newMeasurements.send((size, time))
-        self.sampleCount.value += 1
+        sampleCount.value += 1
     }
 
-    public func bounds(for band: Band, amortized: Bool) -> (size: Bounds<Int>, time: Bounds<Time>) {
-        var sizeBounds = Bounds<Int>()
-        var timeBounds = Bounds<Time>()
-        for (size, sample) in samples {
-            guard let t = sample[band] else { continue }
-            let time = amortized ? t / size : t
-            sizeBounds.insert(size)
-            timeBounds.insert(time)
-        }
+    public func bounds(for band: Band, amortized: Bool) -> (size: ClosedRange<Int>, time: ClosedRange<Time>)? {
+        let bandTimes = samples.compactMapValues({ $0[band] })
+        guard !bandTimes.isEmpty else { return nil }
+
+        let times = bandTimes.map { size, time in amortized ? time / size : time }
+
+        let sizeBounds = bandTimes.keys.min()! ... bandTimes.keys.max()!
+        let timeBounds = times.min()! ... times.max()!
+
         return (sizeBounds, timeBounds)
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-    }
-
-    public static func ==(left: Task, right: Task) -> Bool {
-        return left.name == right.name
     }
     
     public func deleteResults(in range: ClosedRange<Int>? = nil) {
@@ -83,4 +74,11 @@ public final class Task: Codable, Hashable {
         }
     }
 
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+    }
+
+    public static func ==(left: Task, right: Task) -> Bool {
+        return left.name == right.name
+    }
 }

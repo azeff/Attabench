@@ -5,39 +5,14 @@
 import Foundation
 import BigInt
 
-func min<C: Comparable>(_ a: C?, _ b: C?) -> C? {
-    switch (a, b) {
-    case let (a?, b?): return Swift.min(a, b)
-    case let (a?, nil): return a
-    case let (nil, b?): return b
-    case (nil, nil): return nil
-    }
-}
-
-func max<C: Comparable>(_ a: C?, _ b: C?) -> C? {
-    switch (a, b) {
-    case let (a?, b?): return Swift.max(a, b)
-    case let (a?, nil): return a
-    case let (nil, b?): return b
-    case (nil, nil): return nil
-    }
-}
-
-@objc public final class TimeSample: NSObject, Codable {
-    @objc dynamic public private(set) var count: Int = 0
-    public private(set) var minimum: Time? = nil
-    public private(set) var maximum: Time? = nil
-    public private(set) var sum = Time(picoseconds: 0)
-    public private(set) var sumSquared = TimeSquared()
-
-    public override init() {
-        super.init()
-    }
-
-    public convenience init(time: Time) {
-        self.init()
-        self.addMeasurement(time)
-    }
+// TODO: EK - make struct?
+public final class TimeSample: Codable {
+    
+    public private(set) var count: Int
+    public private(set) var minimum: Time
+    public private(set) var maximum: Time
+    public private(set) var sum: Time
+    public private(set) var sumSquared: TimeSquared
 
     enum Key: CodingKey {
         case minimum
@@ -47,35 +22,26 @@ func max<C: Comparable>(_ a: C?, _ b: C?) -> C? {
         case sumSquared
     }
 
+    public init(time: Time) {
+        minimum = time
+        maximum = time
+        sum = time
+        sumSquared = time.squared()
+        count = 1
+    }
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: Key.self)
-        self.minimum = try container.decode(Time?.self, forKey: .minimum)
-        self.maximum = try container.decode(Time?.self, forKey: .maximum)
+        self.minimum = try container.decode(Time.self, forKey: .minimum)
+        self.maximum = try container.decode(Time.self, forKey: .maximum)
         self.count = try container.decode(Int.self, forKey: .count)
         self.sum = try container.decode(Time.self, forKey: .sum)
         self.sumSquared = try container.decode(TimeSquared.self, forKey: .sumSquared)
-        guard count >= 0 else {
+        
+        guard count > 0 else {
             throw DecodingError.dataCorruptedError(
                 forKey: .count, in: container,
-                debugDescription: "negative count")
-        }
-        if count == 0 {
-            minimum = nil
-            maximum = nil
-            count = 0
-            sum = Time(picoseconds: 0)
-            sumSquared = TimeSquared()
-        }
-        super.init()
-        guard count == 0 || minimum != nil else {
-            throw DecodingError.dataCorruptedError(
-                forKey: .minimum, in: container,
-                debugDescription: "minimum is nil with a nonzero count")
-        }
-        guard count == 0 || maximum != nil else {
-            throw DecodingError.dataCorruptedError(
-                forKey: .minimum, in: container,
-                debugDescription: "maximum is nil with a nonzero count")
+                debugDescription: "negative or empty count")
         }
     }
 
@@ -89,8 +55,8 @@ func max<C: Comparable>(_ a: C?, _ b: C?) -> C? {
     }
 
     public func addMeasurement(_ elapsedTime: Time) {
-        minimum = Swift.min(elapsedTime, minimum ?? elapsedTime)
-        maximum = Swift.max(elapsedTime, maximum ?? .zero)
+        minimum = min(elapsedTime, minimum)
+        maximum = max(elapsedTime, maximum)
         sum += elapsedTime
         sumSquared += elapsedTime.squared()
         count += 1
@@ -117,16 +83,10 @@ func max<C: Comparable>(_ a: C?, _ b: C?) -> C? {
     }
 
     public func bounds(for bands: [Band]) -> ClosedRange<Time>? {
-        guard count > 0 else { return nil }
-        var lower: Time? = nil
-        var upper: Time? = nil
-        for band in bands {
-            guard let v = self[band] else { continue }
-            lower = min(lower, v)
-            upper = max(upper, v)
-        }
-        guard let l = lower, let u = upper else { return nil }
-        return l ... u
+        let times = bands.compactMap { self[$0] }
+        guard let lowerBound = times.min(), let upperBound = times.max() else { return nil }
+        
+        return lowerBound ... upperBound
     }
 }
 
@@ -176,18 +136,6 @@ extension TimeSample {
             case .count: return "count"
             }
         }
-
-        public static func ==(left: Band, right: Band) -> Bool {
-            switch (left, right) {
-            case (.maximum, .maximum): return true
-            case let (.sigma(l), .sigma(r)): return l == r
-            case (.average, .average): return true
-            case (.minimum, .minimum): return true
-            case (.count, .count): return true
-            default: return false
-            }
-        }
-
     }
 
     public subscript(_ band: Band) -> Time? {

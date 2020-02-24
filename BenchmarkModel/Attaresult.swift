@@ -5,51 +5,20 @@
 import Foundation
 import Combine
 
-//extension Dictionary where Value: AnyObject {
-//    mutating func value(for key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
-//        if let value = self[key] { return value }
-//        let value = defaultValue()
-//        self[key] = value
-//        return value
-//    }
-//}
-
-public class Attaresult: NSObject, Codable {
+public class Attaresult: Codable {
+    
+    public typealias Band = TimeSample.Band
     
     /// URL of the .attabench document.
     public let benchmarkURL = CurrentValueSubject<URL?, Never>(nil)
 
-    public let benchmarkDisplayNameSubject = CurrentValueSubject<String, Never>("Benchmark")
-    public private(set) lazy var benchmarkDisplayName: AnyPublisher<String, Never> = {
-        benchmarkURL
-            .map { url in
-                guard let url = url else { return "Benchmark" }
-                return FileManager.default.displayName(atPath: url.path)
-            }
-            .eraseToAnyPublisher()
-    }()
-//    public private(set) lazy var benchmarkDisplayName: AnyObservableValue<String>
-//        = benchmarkURL.map { url in
-//            guard let url = url else { return "Benchmark" }
-//            return FileManager.default.displayName(atPath: url.path)
-//    }.buffered()
+    public let benchmarkDisplayName = CurrentValueSubject<String, Never>("Benchmark")
 
     // Data
 
     public let tasks = CurrentValueSubject<[Task], Never>([])
     private var tasksByName: [String: Task] = [:]
-//    private lazy var tasksByName: [String: Task] = {
-//        var d = [String: Task](uniqueKeysWithValues: self.tasks.value.map { ($0.name, $0) })
-//        self.glue.connector.connect(tasks.updates) { [unowned self] update in
-//            guard case let .change(change) = update else { return }
-//            change.forEachOld { task in self.tasksByName.removeValue(forKey: task.name) }
-//            change.forEachNew { task in self.tasksByName[task.name] = task }
-//        }
-//        return d
-//    }()
 
-//    public private(set) lazy var newMeasurements: AnySource<(size: Int, time: Time)>
-//        = self.tasks.map { $0.newMeasurements }.gather()
     public private(set) lazy var newMeasurements: AnyPublisher<(size: Int, time: Time), Never> = {
         return tasks
             .map({ tasks -> AnyPublisher<(size: Int, time: Time), Never> in
@@ -62,38 +31,18 @@ public class Attaresult: NSObject, Codable {
 
     // Run options
 
-    public static let largestPossibleSizeScale: Int = 32
-    public static let sizeScaleLimits: ClosedRange<Int> = 0 ... 32
-
-    public static let timeScaleLimits: ClosedRange<Time>
-        = Time(picoseconds: 1) ... Time(1_000_000.0)
+    public static let largestPossibleSizeScale = 32
+    public static let sizeScaleLimits = 0 ... 32
+    public static let timeScaleLimits = Time(picoseconds: 1) ... Time(1_000_000.0)
 
     public let iterations = CurrentValueSubject<Int, Never>(3)
-    public let durationRange = ClosedRangeVar<Time>(0.01 ... 10.0, limits: Attaresult.timeScaleLimits)
+    public let durationRange = ClosedRangeVariable<Time>(0.01 ... 10.0, limits: Attaresult.timeScaleLimits)
 
-    public let sizeScaleRange = ClosedRangeVar<Int>(0 ... 20, limits: Attaresult.sizeScaleLimits)
+    public let sizeScaleRange = ClosedRangeVariable<Int>(0 ... 20, limits: Attaresult.sizeScaleLimits)
     public let sizeSubdivisions = CurrentValueSubject<Int, Never>(8)
 
-    public let selectedSizesSubject = CurrentValueSubject<Set<Int>, Never>([])
-    public private(set) lazy var selectedSizes: AnyPublisher<Set<Int>, Never> = {
-        return sizeSubdivisions.combineLatest(sizeScaleRange.valuePublisher) { subs, range in
-            let lower = max(0, min(Attaresult.largestPossibleSizeScale, range.lowerBound))
-            let upper = max(0, min(Attaresult.largestPossibleSizeScale, range.upperBound))
-            var sizes: Set<Int> = []
-            for i in subs * lower ... subs * upper {
-                let size = exp2(Double(i) / Double(subs))
-                sizes.insert(Int(size))
-            }
-            return sizes
-        }.eraseToAnyPublisher()
-    }()
-    
-    public let selectedSizeRangeSubject = CurrentValueSubject<ClosedRange<Int>, Never>(0...0)
-    public private(set) lazy var selectedSizeRange: AnyPublisher<ClosedRange<Int>, Never> = {
-        sizeScaleRange.valuePublisher
-            .map({ (1 << $0.lowerBound) ... (1 << $0.upperBound) })
-            .eraseToAnyPublisher()
-    }()
+    public let selectedSizes = CurrentValueSubject<Set<Int>, Never>([])    
+    public let selectedSizeRange = CurrentValueSubject<ClosedRange<Int>, Never>(0...0)
 
     public private(set) lazy var runOptionsTick: AnyPublisher<Void, Never> = {
         Publishers.Merge4(
@@ -116,11 +65,11 @@ public class Attaresult: NSObject, Codable {
 
     public let highlightSelectedSizeRange = CurrentValueSubject<Bool, Never>(true)
 
-    public let displaySizeScaleRange = ClosedRangeVar<Int>(0 ... 20, limits: Attaresult.sizeScaleLimits)
+    public let displaySizeScaleRange = ClosedRangeVariable<Int>(0 ... 20, limits: Attaresult.sizeScaleLimits)
     public let displayIncludeSizeScaleRange = CurrentValueSubject<Bool, Never>(false)
     public let displayIncludeAllMeasuredSizes = CurrentValueSubject<Bool, Never>(true)
 
-    public let displayTimeRange = ClosedRangeVar<Time>(Time.nanosecond ... Time.second, limits: Attaresult.timeScaleLimits)
+    public let displayTimeRange = ClosedRangeVariable<Time>(Time.nanosecond ... Time.second, limits: Attaresult.timeScaleLimits)
     public let displayIncludeTimeRange = CurrentValueSubject<Bool, Never>(false)
     public let displayIncludeAllMeasuredTimes = CurrentValueSubject<Bool, Never>(true)
 
@@ -150,12 +99,12 @@ public class Attaresult: NSObject, Codable {
         ]).eraseToAnyPublisher()
     }()
 
-    public override init() {
-        super.init()
+    private var cancellables = Set<AnyCancellable>()
+
+    public init() {
         privateInit()
     }
     
-    var cancellables = Set<AnyCancellable>()
     private func privateInit() {
         tasks.sink { [unowned self] tasks in
             self.tasksByName = [String: Task].init(uniqueKeysWithValues: tasks.map({ ($0.name, $0) }))
@@ -167,27 +116,23 @@ public class Attaresult: NSObject, Codable {
                 guard let url = url else { return "Benchmark" }
                 return FileManager.default.displayName(atPath: url.path)
             }
-            .subscribe(benchmarkDisplayNameSubject)
+            .subscribe(benchmarkDisplayName)
             .store(in: &cancellables)
         
-        
+        let sizeScaleClamped = sizeScaleRange.valuePublisher
+            .map { $0.clamped(to: 0 ... Attaresult.largestPossibleSizeScale) }
         sizeSubdivisions
-            .combineLatest(sizeScaleRange.valuePublisher) { subs, range in
-                let lower = max(0, min(Attaresult.largestPossibleSizeScale, range.lowerBound))
-                let upper = max(0, min(Attaresult.largestPossibleSizeScale, range.upperBound))
-                var sizes: Set<Int> = []
-                for i in subs * lower ... subs * upper {
-                    let size = exp2(Double(i) / Double(subs))
-                    sizes.insert(Int(size))
-                }
+            .combineLatest(sizeScaleClamped) { subs, range in
+                let subsRange = subs * range.lowerBound ... subs * range.upperBound
+                let sizes = Set(subsRange.map { Int(exp2(Double($0) / Double(subs))) })
                 return sizes
             }
-            .subscribe(selectedSizesSubject)
+            .subscribe(selectedSizes)
             .store(in: &cancellables)
         
         sizeScaleRange.valuePublisher
             .map({ (1 << $0.lowerBound) ... (1 << $0.upperBound) })
-            .subscribe(selectedSizeRangeSubject)
+            .subscribe(selectedSizeRange)
             .store(in: &cancellables)
     }
 
@@ -226,44 +171,7 @@ public class Attaresult: NSObject, Codable {
         case chartRefreshInterval
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        if let url = self.benchmarkURL.value {
-            try container.encode(url.bookmarkData(options: .suitableForBookmarkFile), forKey: .source)
-        }
-        try container.encode(self.tasks.value, forKey: .tasks)
-        try container.encode(self.iterations.value, forKey: .iterations)
-        try container.encode(self.durationRange.lowerBound.seconds, forKey: .minimumDuration)
-        try container.encode(self.durationRange.upperBound.seconds, forKey: .maximumDuration)
-        try container.encode(self.sizeScaleRange.lowerBound, forKey: .minimumSizeScale)
-        try container.encode(self.sizeScaleRange.upperBound, forKey: .maximumSizeScale)
-        try container.encode(self.sizeSubdivisions.value, forKey: .sizeSubdivisions)
-        try container.encode(self.amortizedTime.value, forKey: .amortizedTime)
-        try container.encode(self.logarithmicSizeScale.value, forKey: .logarithmicSizeScale)
-        try container.encode(self.logarithmicTimeScale.value, forKey: .logarithmicTimeScale)
-        try container.encode(self.topBand.value, forKey: .topBand)
-        try container.encode(self.centerBand.value, forKey: .centerBand)
-        try container.encode(self.bottomBand.value, forKey: .bottomBand)
-        try container.encode(self.highlightSelectedSizeRange.value, forKey: .highlightSelectedSizeRange)
-
-        try container.encode(self.displaySizeScaleRange.lowerBound, forKey: .displaySizeScaleRangeMin)
-        try container.encode(self.displaySizeScaleRange.upperBound, forKey: .displaySizeScaleRangeMax)
-        try container.encode(self.displayIncludeSizeScaleRange.value, forKey: .displayIncludeSizeScaleRange)
-        try container.encode(self.displayIncludeAllMeasuredSizes.value, forKey: .displayIncludeAllMeasuredSizes)
-
-        try container.encode(self.displayTimeRange.lowerBound.seconds, forKey: .displayTimeRangeMin)
-        try container.encode(self.displayTimeRange.upperBound.seconds, forKey: .displayTimeRangeMax)
-        try container.encode(self.displayIncludeTimeRange.value, forKey: .displayIncludeTimeRange)
-        try container.encode(self.displayIncludeAllMeasuredTimes.value, forKey: .displayIncludeAllMeasuredTimes)
-
-        try container.encode(self.themeName.value, forKey: .themeName)
-        try container.encode(self.progressRefreshInterval.value, forKey: .progressRefreshInterval)
-        try container.encode(self.chartRefreshInterval.value, forKey: .chartRefreshInterval)
-    }
-
     public required init(from decoder: Decoder) throws {
-        super.init()
-        
         privateInit()
         
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -342,22 +250,65 @@ public class Attaresult: NSObject, Codable {
             self.chartRefreshInterval.value = v
         }
     }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        if let url = self.benchmarkURL.value {
+            try container.encode(url.bookmarkData(options: .suitableForBookmarkFile), forKey: .source)
+        }
+        try container.encode(self.tasks.value, forKey: .tasks)
+        try container.encode(self.iterations.value, forKey: .iterations)
+        try container.encode(self.durationRange.lowerBound.seconds, forKey: .minimumDuration)
+        try container.encode(self.durationRange.upperBound.seconds, forKey: .maximumDuration)
+        try container.encode(self.sizeScaleRange.lowerBound, forKey: .minimumSizeScale)
+        try container.encode(self.sizeScaleRange.upperBound, forKey: .maximumSizeScale)
+        try container.encode(self.sizeSubdivisions.value, forKey: .sizeSubdivisions)
+        try container.encode(self.amortizedTime.value, forKey: .amortizedTime)
+        try container.encode(self.logarithmicSizeScale.value, forKey: .logarithmicSizeScale)
+        try container.encode(self.logarithmicTimeScale.value, forKey: .logarithmicTimeScale)
+        try container.encode(self.topBand.value, forKey: .topBand)
+        try container.encode(self.centerBand.value, forKey: .centerBand)
+        try container.encode(self.bottomBand.value, forKey: .bottomBand)
+        try container.encode(self.highlightSelectedSizeRange.value, forKey: .highlightSelectedSizeRange)
 
+        try container.encode(self.displaySizeScaleRange.lowerBound, forKey: .displaySizeScaleRangeMin)
+        try container.encode(self.displaySizeScaleRange.upperBound, forKey: .displaySizeScaleRangeMax)
+        try container.encode(self.displayIncludeSizeScaleRange.value, forKey: .displayIncludeSizeScaleRange)
+        try container.encode(self.displayIncludeAllMeasuredSizes.value, forKey: .displayIncludeAllMeasuredSizes)
+
+        try container.encode(self.displayTimeRange.lowerBound.seconds, forKey: .displayTimeRangeMin)
+        try container.encode(self.displayTimeRange.upperBound.seconds, forKey: .displayTimeRangeMax)
+        try container.encode(self.displayIncludeTimeRange.value, forKey: .displayIncludeTimeRange)
+        try container.encode(self.displayIncludeAllMeasuredTimes.value, forKey: .displayIncludeAllMeasuredTimes)
+
+        try container.encode(self.themeName.value, forKey: .themeName)
+        try container.encode(self.progressRefreshInterval.value, forKey: .progressRefreshInterval)
+        try container.encode(self.chartRefreshInterval.value, forKey: .chartRefreshInterval)
+    }
+    
     // MARK: Measurements
 
     public func remove(_ task: Task) {
-        let i = tasks.value.firstIndex(of: task)!
-        tasks.value.remove(at: i)
+        guard let index = tasks.value.firstIndex(of: task) else {
+            assertionFailure("Unknown task")
+            return
+        }
+        tasks.value.remove(at: index)
+        // TODO: EK - in task(for:) tasksByName is assumed to be updated once tasks value changes.
+        // Why removing task explicitly?
         tasksByName.removeValue(forKey: task.name)
     }
+    
     public func task(for name: String) -> Task {
-        if let task = self.tasksByName[name] {
+        if let task = tasksByName[name] {
             return task
         }
-        let task = Task(name: name)
-        tasks.value.append(task)
-        return self.tasksByName[name]!
+        tasks.value.append(Task(name: name))
+        // TODO: EK - relying on tasksByName getting updated once tasks value changes.
+        // Not super obvious peace of code, think of how to make it more unerstandable.
+        return tasksByName[name]!
     }
+    
     public func task(named name: String) -> Task? {
         return tasksByName[name]
     }
@@ -367,17 +318,18 @@ public class Attaresult: NSObject, Codable {
         task.addMeasurement(time, forSize: size)
     }
 
-    public typealias Band = TimeSample.Band
+    public func bounds(for band: Band, tasks: [Task]? = nil, amortized: Bool) -> (size: ClosedRange<Int>, time: ClosedRange<Time>)? {
+        let tasks = tasks ?? self.tasks.value
 
-    public func bounds(for band: Band, tasks: [Task]? = nil, amortized: Bool) -> (size: Bounds<Int>, time: Bounds<Time>) {
-        var sizeBounds = Bounds<Int>()
-        var timeBounds = Bounds<Time>()
-        for task in tasks ?? self.tasks.value {
-            let b = task.bounds(for: band, amortized: amortized)
-            sizeBounds.formUnion(with: b.size)
-            timeBounds.formUnion(with: b.time)
-        }
+        guard !tasks.isEmpty else { return nil }
+
+        let bounds = tasks.compactMap { $0.bounds(for: band, amortized: amortized) }
+        let sizesBounds = bounds.map { $0.0 }
+        let timesBounds = bounds.map { $0.1 }
+
+        let sizeBounds = sizesBounds[0].union(sizesBounds[1...])
+        let timeBounds = timesBounds[0].union(timesBounds[1...])
+
         return (sizeBounds, timeBounds)
     }
 }
-

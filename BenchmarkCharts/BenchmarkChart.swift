@@ -105,7 +105,6 @@ struct RawCurve {
 
 /// Contains a preprocessed copy of selected data from a bunch of benchmark results, according to given parameters.
 public struct BenchmarkChart {
-    public typealias Bounds = BenchmarkModel.Bounds
     public typealias Band = TimeSample.Band
 
     public struct Options {

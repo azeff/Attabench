@@ -21,7 +21,7 @@ let package = Package(
         .target(name: "BenchmarkModel", dependencies: ["BigInt"], path: "BenchmarkModel"),
         .target(name: "BenchmarkRunner", dependencies: ["Benchmarking", "BenchmarkModel"], path: "BenchmarkRunner"),
         .target(name: "BenchmarkCharts", dependencies: ["BenchmarkModel"], path: "BenchmarkCharts"),
-        .target(name: "attachart", dependencies: ["BenchmarkModel", "BenchmarkCharts", "Benchmarking", "OptionParser"], path: "attachart"),
+        .target(name: "attachart", dependencies: ["BenchmarkModel", "BenchmarkCharts", "OptionParser"], path: "attachart"),
     ],
     swiftLanguageVersions: [.v5]
 )

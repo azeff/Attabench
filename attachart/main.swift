@@ -4,7 +4,6 @@
 
 import Cocoa
 import OptionParser
-import Benchmarking // for complain
 import BenchmarkModel
 import BenchmarkCharts
 

@@ -1011,7 +1011,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             break
         }
 
-        let name = model.value.benchmarkDisplayNameSubject.value
+        let name = model.value.benchmarkDisplayName.value
 
         switch new {
         case .noBenchmark:
@@ -1386,7 +1386,7 @@ extension AttabenchDocument {
         // FIXME this is horrible. Implement Undo etc.
         let tasks = (self.tasksTableView?.selectedRowIndexes ?? []).map { self.visibleTasks.value[$0] }
         
-        let selectedSizeRange = model.value.selectedSizeRangeSubject.value
+        let selectedSizeRange = model.value.selectedSizeRange.value
         for task in tasks {
             task.deleteResults(in: NSEvent.modifierFlags.contains(.shift) ? nil : selectedSizeRange)
             if !task.isRunnable.value && task.sampleCount.value == 0 {
@@ -1488,13 +1488,13 @@ extension AttabenchDocument {
         default: return
         }
         let tasks = tasksToRun.value.map { $0.name }
-        let sizes = self.model.value.selectedSizesSubject.value.sorted()
+        let sizes = self.model.value.selectedSizes.value.sorted()
         guard !tasks.isEmpty, !sizes.isEmpty else {
             self.state = .waiting
             return
         }
 
-        log(.status, "\nRunning \(model.value.benchmarkDisplayNameSubject.value) with \(tasks.count) tasks at sizes from \(sizes.first!.sizeLabel) to \(sizes.last!.sizeLabel).")
+        log(.status, "\nRunning \(model.value.benchmarkDisplayName.value) with \(tasks.count) tasks at sizes from \(sizes.first!.sizeLabel) to \(sizes.last!.sizeLabel).")
         let options = RunOptions(tasks: tasks,
                                  sizes: sizes,
                                  iterations: model.value.iterations.value,
@@ -1548,38 +1548,33 @@ extension AttabenchDocument {
 //MARK: Chart rendering
 
 extension AttabenchDocument {
-
+    
     private func _refreshChart() {
         guard let chartView = self.chartView else { return }
 
         let allTasks = model.value.tasks.value
         let tasks = allTasks.filter { $0.checked.value }
-//        let tasks = checkedTasks.value
 
         var options = BenchmarkChart.Options()
         options.amortizedTime = model.value.amortizedTime.value
         options.logarithmicSize = model.value.logarithmicSizeScale.value
         options.logarithmicTime = model.value.logarithmicTimeScale.value
 
-        var sizeBounds = Bounds<Int>()
+        var sizeBounds: ClosedRange<Int>?
         if model.value.highlightSelectedSizeRange.value {
-            let r = model.value.sizeScaleRange.value
-            sizeBounds.formUnion(with: Bounds((1 << r.lowerBound) ... (1 << r.upperBound)))
+            let range = model.value.sizeScaleRange.value
+            sizeBounds = (1 << range.lowerBound) ... (1 << range.upperBound)
         }
         if model.value.displayIncludeSizeScaleRange.value {
-            let r = model.value.displaySizeScaleRange.value
-            sizeBounds.formUnion(with: Bounds((1 << r.lowerBound) ... (1 << r.upperBound)))
+            let range = model.value.displaySizeScaleRange.value
+            let bounds = (1 << range.lowerBound) ... (1 << range.upperBound)
+            sizeBounds = sizeBounds?.union(bounds) ?? bounds
         }
-        options.displaySizeRange = sizeBounds.range
+        options.displaySizeRange = sizeBounds
         options.displayAllMeasuredSizes = model.value.displayIncludeAllMeasuredSizes.value
-
-        var timeBounds = Bounds<Time>()
+        
         if model.value.displayIncludeTimeRange.value {
-            let r = model.value.displayTimeRange.value
-            timeBounds.formUnion(with: Bounds(r))
-        }
-        if let r = timeBounds.range {
-            options.displayTimeRange = r.lowerBound ... r.upperBound
+            options.displayTimeRange = model.value.displayTimeRange.value
         }
         options.displayAllMeasuredTimes = model.value.displayIncludeAllMeasuredTimes.value
 

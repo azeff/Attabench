@@ -10,7 +10,6 @@
 		BB40F81B1F5C2AE700C5EB75 /* BenchmarkRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB40F81A1F5C2AE700C5EB75 /* BenchmarkRenderer.swift */; };
 		BB40F81D1F5C2D6600C5EB75 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB40F81C1F5C2D6600C5EB75 /* CoreGraphics.framework */; };
 		BB5B02D91F5E2A4C0084D86B /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5B02D81F5E2A4C0084D86B /* Task.swift */; };
-		BB61397A1F5DBB80005455D5 /* Bounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6139791F5DBB80005455D5 /* Bounds.swift */; };
 		BB65B0DA1F59B9B5007EB717 /* BenchmarkModel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26ED1F59B88E00C6FB74 /* BenchmarkModel.framework */; };
 		BB65B0F61F59BBA5007EB717 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB65B0F51F59BBA5007EB717 /* AppDelegate.swift */; };
 		BB65B0F81F59BBA5007EB717 /* AttabenchDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB65B0F71F59BBA5007EB717 /* AttabenchDocument.swift */; };
@@ -54,6 +53,8 @@
 		BBCC9FB61F5AFA6A00AE36DE /* GlueKitTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC9FB51F5AFA6A00AE36DE /* GlueKitTableViewController.swift */; };
 		BBCC9FBC1F5B00F400AE36DE /* TaskCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC9FBB1F5B00F400AE36DE /* TaskCellView.swift */; };
 		F6318D2D23FFC53D0069824C /* OptionParser in Frameworks */ = {isa = PBXBuildFile; productRef = F6318D2C23FFC53D0069824C /* OptionParser */; };
+		F6ABC87F240343A4002799E9 /* complain.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC87E240343A4002799E9 /* complain.swift */; };
+		F6ABC88124034425002799E9 /* ClosedRange+Union.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC88024034425002799E9 /* ClosedRange+Union.swift */; };
 		F6ACE9572402A74A005A20FE /* Benchmarking in Frameworks */ = {isa = PBXBuildFile; productRef = F6ACE9562402A74A005A20FE /* Benchmarking */; };
 		F6ACE9592402A758005A20FE /* Benchmarking in Frameworks */ = {isa = PBXBuildFile; productRef = F6ACE9582402A758005A20FE /* Benchmarking */; };
 		F6D815382400651D0024C899 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = F6D815372400651D0024C899 /* BigInt */; };
@@ -122,7 +123,6 @@
 		BB4F15611F409882003C05C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB55F5771F61CF1E00E9FF6D /* Options.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Options.swift; sourceTree = "<group>"; };
 		BB5B02D81F5E2A4C0084D86B /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
-		BB6139791F5DBB80005455D5 /* Bounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bounds.swift; sourceTree = "<group>"; };
 		BB65B0F31F59BBA4007EB717 /* Attabench.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Attabench.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB65B0F51F59BBA5007EB717 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BB65B0F71F59BBA5007EB717 /* AttabenchDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttabenchDocument.swift; sourceTree = "<group>"; };
@@ -165,6 +165,8 @@
 		BBCC9FB01F5AE11100AE36DE /* ColoredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColoredView.swift; sourceTree = "<group>"; };
 		BBCC9FB51F5AFA6A00AE36DE /* GlueKitTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlueKitTableViewController.swift; sourceTree = "<group>"; };
 		BBCC9FBB1F5B00F400AE36DE /* TaskCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCellView.swift; sourceTree = "<group>"; };
+		F6ABC87E240343A4002799E9 /* complain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = complain.swift; sourceTree = "<group>"; };
+		F6ABC88024034425002799E9 /* ClosedRange+Union.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClosedRange+Union.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,6 +247,7 @@
 				BB23CE811F61B476006FC3B3 /* main.swift */,
 				BB23CE8E1F61B991006FC3B3 /* Render.swift */,
 				BB55F5771F61CF1E00E9FF6D /* Options.swift */,
+				F6ABC87E240343A4002799E9 /* complain.swift */,
 			);
 			path = attachart;
 			sourceTree = "<group>";
@@ -321,7 +324,7 @@
 				BB888E9C1F5DAC5000AB2652 /* Attaresult.swift */,
 				BBB4824D1F5F0A5D00A6C9DD /* ClosedRangeVariable.swift */,
 				BB5B02D81F5E2A4C0084D86B /* Task.swift */,
-				BB6139791F5DBB80005455D5 /* Bounds.swift */,
+				F6ABC88024034425002799E9 /* ClosedRange+Union.swift */,
 				BBCA26F01F59B88E00C6FB74 /* Info.plist */,
 			);
 			path = BenchmarkModel;
@@ -557,6 +560,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB805E7C1F5B0F2500D59657 /* StatusLabel.swift in Sources */,
+				F6ABC87F240343A4002799E9 /* complain.swift in Sources */,
 				BB855CBF1F5C00B5008849E2 /* ChartView Dragging.swift in Sources */,
 				BBCC9FB61F5AFA6A00AE36DE /* GlueKitTableViewController.swift in Sources */,
 				BB855CD21F5C2436008849E2 /* ChartView.swift in Sources */,
@@ -590,11 +594,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BB61397A1F5DBB80005455D5 /* Bounds.swift in Sources */,
 				BB888E9D1F5DAC5000AB2652 /* Attaresult.swift in Sources */,
 				BBB482511F5F0ABE00A6C9DD /* ClosedRangeVariable.swift in Sources */,
 				BBCA26FC1F59B8A400C6FB74 /* Timestamp.swift in Sources */,
 				BBCA26FD1F59B8A400C6FB74 /* TimeSample.swift in Sources */,
+				F6ABC88124034425002799E9 /* ClosedRange+Union.swift in Sources */,
 				BB5B02D91F5E2A4C0084D86B /* Task.swift in Sources */,
 				BBCA26FB1F59B8A400C6FB74 /* Time.swift in Sources */,
 			);
@@ -1105,10 +1109,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 22TBR3K4G9;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Attabench/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1161,10 +1162,7 @@
 				DEVELOPMENT_TEAM = 22TBR3K4G9;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1227,10 +1225,7 @@
 				DEVELOPMENT_TEAM = 22TBR3K4G9;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1293,10 +1288,7 @@
 				DEVELOPMENT_TEAM = 22TBR3K4G9;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

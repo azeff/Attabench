@@ -4,7 +4,7 @@
 
 import Combine
 
-public class ClosedRangeVar<Bounds: Comparable> {
+public class ClosedRangeVariable<Bounds: Comparable> {
     
     public var value: ClosedRange<Bounds> {
         get { valueSubject.value }
@@ -42,58 +42,3 @@ public class ClosedRangeVar<Bounds: Comparable> {
         valueSubject.value = valueSubject.value.lowerBound ... upperBound
     }
 }
-//
-//public class ClosedRangeVariable<Bounds: Comparable> : Variable<ClosedRange<Bounds>> {
-//    let limits: Value?
-//    init(_ value: Value, limits: Value? = nil) {
-//        self.limits = limits
-//        super.init(value)
-//    }
-//
-//    public var lowerBound: AnyUpdatableValue<Bounds> {
-//        return AnyUpdatableValue<Bounds>(
-//            getter: { () -> Bounds in self.value.lowerBound },
-//            apply: self.applyLowerBoundUpdate,
-//            updates: self.updates.map { update in
-//                update.map { change in
-//                    change.map { $0.lowerBound }
-//                }
-//            }
-//        )
-//    }
-//
-//    func applyLowerBoundUpdate(_ update: ValueUpdate<Bounds>) {
-//        switch update {
-//        case .beginTransaction:
-//            self.apply(.beginTransaction)
-//        case .change(let change):
-//            let upper = Swift.max(change.new, self.value.upperBound)
-//            var new = (change.new ... upper)
-//            if let limits = limits { new = new.clamped(to: limits) }
-//            self.apply(.change(.init(from: self.value, to: new)))
-//        case .endTransaction:
-//            self.apply(.endTransaction)
-//        }
-//    }
-//
-//    public var upperBound: AnyUpdatableValue<Bounds> {
-//        return AnyUpdatableValue<Bounds>(
-//            getter: { () -> Bounds in self.value.upperBound },
-//            apply: self.applyUpperBoundUpdate,
-//            updates: self.updates.map { update in update.map { change in change.map { $0.upperBound } } })
-//    }
-//
-//    func applyUpperBoundUpdate(_ update: ValueUpdate<Bounds>) {
-//        switch update {
-//        case .beginTransaction:
-//            self.apply(.beginTransaction)
-//        case .change(let change):
-//            let lower = Swift.min(self.value.lowerBound, change.new)
-//            var new = lower ... change.new
-//            if let limits = limits { new = new.clamped(to: limits) }
-//            self.apply(.change(.init(from: self.value, to: new)))
-//        case .endTransaction:
-//            self.apply(.endTransaction)
-//        }
-//    }
-//}
