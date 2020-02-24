@@ -1,9 +1,8 @@
 ![Attabench](./Images/Header.png)
 
-[![Xcode 9](https://img.shields.io/badge/Xcode-9-blue.svg)](https://developer.apple.com/xcode/)
-[![Swift 4](https://img.shields.io/badge/Swift-4-blue.svg)](https://swift.org/)
+[![Xcode 11](https://img.shields.io/badge/Xcode-11-blue.svg)](https://developer.apple.com/xcode/)
+[![Swift 5](https://img.shields.io/badge/Swift-5-blue.svg)](https://swift.org/)
 [![Platform](https://img.shields.io/badge/platforms-macOS-blue.svg)](https://developer.apple.com/platforms/)
-[![Build Status](https://travis-ci.org/attaswift/Attabench.svg?branch=master)](https://travis-ci.org/attaswift/Attabench)
 
 Attabench is a microbenchmarking app for macOS, designed to measure
 and visualize the performance of Swift code.
@@ -46,33 +45,14 @@ Follow these steps to compile Attabench on your own:
 1. Clone this repo to your Mac.
 
     ```
-    git clone https://github.com/attaswift/Attabench.git Attabench --recursive
+    git clone https://github.com/azeff/Attabench.git Attabench
     cd Attabench
     ```
-
-2. Install [Carthage][carthage] if you don't already have it. (This assumes you have [Homebrew][brew] installed.)
-
-    ```
-    brew install carthage
-    ```
-
-3. Retrieve and build dependencies ([SipHash][siphash], [BTree][btree] and [GlueKit][gluekit]).
-
-    ```
-    carthage bootstrap --platform Mac
-    ```
-
-4. Open the project file in Xcode 9, then build and run the Attabench target.
+2. Open the project file in Xcode 11, then build and run the Attabench target.
 
     ```
     open Attabench.xcodeproj
     ```
-
-[carthage]: https://github.com/Carthage/Carthage
-[brew]: https://brew.sh
-[siphash]: https://github.com/attaswift/SipHash
-[btree]: https://github.com/attaswift/BTree
-[gluekit]: https://github.com/attaswift/GlueKit
 
 ## Usage
 
