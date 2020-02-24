@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13189.4" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16092.1" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13189.4"/>
-        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
-        <capability name="box content view" minToolsVersion="7.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16092.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
-        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="AttabenchDocument" customModule="Attabench" customModuleProvider="target">
@@ -62,7 +59,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="133" y="235" width="923" height="484"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <value key="minSize" type="size" width="94" height="86"/>
             <view key="contentView" wantsLayer="YES" id="gIp-Ho-8D9">
                 <rect key="frame" x="0.0" y="0.0" width="923" height="484"/>
@@ -87,20 +84,19 @@
                                                     <subviews>
                                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" columnReordering="NO" autosaveColumns="NO" typeSelect="NO" autosaveName="TaskTable" rowHeight="20" viewBased="YES" id="FCj-n2-LsA">
                                                             <rect key="frame" x="0.0" y="0.0" width="253" height="358"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
                                                                 <tableColumn identifier="TaskColumn" editable="NO" width="250" minWidth="40" maxWidth="10000" id="5JW-6S-7Uz">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                                        <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                     </tableHeaderCell>
                                                                     <buttonCell key="dataCell" type="check" bezelStyle="regularSquare" imagePosition="only" alignment="right" controlSize="small" inset="2" id="MIP-4Y-8Xx">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                                     <prototypeCellViews>
@@ -119,7 +115,7 @@
                                                                                     </connections>
                                                                                 </button>
                                                                                 <textField horizontalHuggingPriority="239" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="ZZR-24-yUe">
-                                                                                    <rect key="frame" x="20" y="10" width="193" height="17"/>
+                                                                                    <rect key="frame" x="20" y="11" width="193" height="16"/>
                                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Task Name" drawsBackground="YES" usesSingleLineMode="YES" id="iqp-Dq-uQ0">
                                                                                         <font key="font" metaFont="system"/>
                                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -127,9 +123,9 @@
                                                                                     </textFieldCell>
                                                                                 </textField>
                                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jxk-Yy-51E">
-                                                                                    <rect key="frame" x="215" y="10" width="33" height="14"/>
+                                                                                    <rect key="frame" x="215" y="11" width="33" height="14"/>
                                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" drawsBackground="YES" id="MXl-Zm-yR8">
-                                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                                        <font key="font" metaFont="message" size="11"/>
                                                                                         <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                                                                         <color key="backgroundColor" red="0.8673805100312505" green="0.8673805100312505" blue="0.8673805100312505" alpha="0.0" colorSpace="custom" customColorSpace="displayP3"/>
                                                                                     </textFieldCell>
@@ -161,11 +157,11 @@
                                                     </subviews>
                                                     <nil key="backgroundColor"/>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="VdQ-X3-4eM">
+                                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="VdQ-X3-4eM">
                                                     <rect key="frame" x="0.0" y="461" width="225" height="16"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
-                                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="2jS-Ef-bUb">
+                                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="2jS-Ef-bUb">
                                                     <rect key="frame" x="-16" y="0.0" width="16" height="0.0"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
@@ -196,7 +192,7 @@
                                                         </connections>
                                                     </searchField>
                                                     <button toolTip="Show or hide the Run Options area" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7bl-F8-T8v">
-                                                        <rect key="frame" x="232" y="-2" width="18" height="32"/>
+                                                        <rect key="frame" x="232" y="5" width="18" height="18"/>
                                                         <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="OpenUpTemplate" imagePosition="only" alignment="center" alternateImage="CloseDownTemplate" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="3I8-uP-ykt">
                                                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -233,8 +229,8 @@
                                                                         <textField autoresizesSubviews="NO" toolTip="Keep repeating measurements until this amount of time has elapsed." horizontalHuggingPriority="220" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ayq-Lb-3HF">
                                                                             <rect key="frame" x="80" y="29" width="81" height="19"/>
                                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="seconds" drawsBackground="YES" id="0O5-SR-Myp">
-                                                                                <font key="font" metaFont="smallSystem"/>
-                                                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                                <font key="font" metaFont="message" size="11"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                         </textField>
@@ -243,9 +239,9 @@
                                                                             <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="1000" doubleValue="1" id="6iU-hi-CfQ"/>
                                                                         </stepper>
                                                                         <textField horizontalHuggingPriority="247" verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ywB-bH-GFa">
-                                                                            <rect key="frame" x="10" y="32" width="66" height="14"/>
+                                                                            <rect key="frame" x="10" y="31" width="66" height="14"/>
                                                                             <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Duration" id="H3o-XF-OnB">
-                                                                                <font key="font" metaFont="smallSystem"/>
+                                                                                <font key="font" metaFont="message" size="11"/>
                                                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
@@ -253,15 +249,15 @@
                                                                         <textField toolTip="The number of times to repeat a task before reporting the lowest measurement." horizontalHuggingPriority="220" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yL8-DN-rbo">
                                                                             <rect key="frame" x="80" y="54" width="156" height="19"/>
                                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="count" drawsBackground="YES" id="LJX-ds-F56">
-                                                                                <font key="font" metaFont="smallSystem"/>
-                                                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                                <font key="font" metaFont="message" size="11"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                         </textField>
                                                                         <textField horizontalHuggingPriority="247" verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="syF-gR-Wxi">
-                                                                            <rect key="frame" x="10" y="57" width="66" height="14"/>
+                                                                            <rect key="frame" x="10" y="56" width="66" height="14"/>
                                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Iterations" id="DL2-RU-qL3">
-                                                                                <font key="font" metaFont="smallSystem"/>
+                                                                                <font key="font" metaFont="message" size="11"/>
                                                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
@@ -269,7 +265,7 @@
                                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dGH-fk-LnY">
                                                                             <rect key="frame" x="78" y="12" width="23" height="14"/>
                                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Min" id="0pL-5w-uw9">
-                                                                                <font key="font" metaFont="smallSystem"/>
+                                                                                <font key="font" metaFont="message" size="11"/>
                                                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
@@ -277,7 +273,7 @@
                                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1na-tO-jly">
                                                                             <rect key="frame" x="165" y="12" width="26" height="14"/>
                                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max" id="gqX-zR-ruo">
-                                                                                <font key="font" metaFont="smallSystem"/>
+                                                                                <font key="font" metaFont="message" size="11"/>
                                                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
@@ -285,8 +281,8 @@
                                                                         <textField toolTip="Stop repeating measurements after this amount of time has elapsed. (The last measurement will not be canceled.)" horizontalHuggingPriority="220" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ggj-kc-6JG">
                                                                             <rect key="frame" x="167" y="29" width="80" height="19"/>
                                                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="seconds" drawsBackground="YES" id="oPY-wM-5m9">
-                                                                                <font key="font" metaFont="smallSystem"/>
-                                                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                                <font key="font" metaFont="message" size="11"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                         </textField>
@@ -377,10 +373,10 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                         <subviews>
                                             <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="6" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I7l-6D-bUv">
-                                                <rect key="frame" x="5" y="-2" width="434" height="32"/>
+                                                <rect key="frame" x="5" y="5" width="434" height="18"/>
                                                 <subviews>
                                                     <button toolTip="Show or hide execution parameters" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="l2g-1I-7US" userLabel="Show Left Pane Button">
-                                                        <rect key="frame" x="0.0" y="0.0" width="18" height="32"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="18" height="18"/>
                                                         <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="OpenRightTemplate" imagePosition="only" alignment="center" alternateImage="CloseLeftTemplate" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="3Wc-Lx-7Zj">
                                                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -390,7 +386,7 @@
                                                         </connections>
                                                     </button>
                                                     <button toolTip="Show or hide the Console area" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vns-ud-AWF">
-                                                        <rect key="frame" x="24" y="0.0" width="18" height="32"/>
+                                                        <rect key="frame" x="24" y="0.0" width="18" height="18"/>
                                                         <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="OpenUpTemplate" imagePosition="only" alignment="center" alternateImage="CloseDownTemplate" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="BOy-29-Axj">
                                                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -400,7 +396,7 @@
                                                         </connections>
                                                     </button>
                                                     <textField horizontalHuggingPriority="1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nAl-9b-Vd5" customClass="StatusLabel" customModule="Attabench" customModuleProvider="target">
-                                                        <rect key="frame" x="46" y="8" width="320" height="17"/>
+                                                        <rect key="frame" x="46" y="1" width="321" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" enabled="NO" sendsActionOnEndEditing="YES" title="Status Message" usesSingleLineMode="YES" id="uL1-bP-Rr1">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="windowFrameTextColor" catalog="System" colorSpace="catalog"/>
@@ -408,17 +404,17 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <button toolTip="Clear Console area" horizontalHuggingPriority="1000" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="UJD-AI-pDj">
-                                                        <rect key="frame" x="370" y="6" width="40" height="19"/>
+                                                        <rect key="frame" x="370.5" y="-1" width="40" height="19"/>
                                                         <buttonCell key="cell" type="roundTextured" title="Clear" bezelStyle="texturedRounded" alignment="center" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ZAz-uA-Lhb">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <font key="font" metaFont="message" size="11"/>
                                                         </buttonCell>
                                                         <connections>
                                                             <action selector="clearConsole:" target="-2" id="wYs-Li-KAs"/>
                                                         </connections>
                                                     </button>
                                                     <button toolTip="Show or hide chart options" horizontalHuggingPriority="255" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="JEA-rx-7dd" userLabel="Show Right Pane Button">
-                                                        <rect key="frame" x="416" y="0.0" width="18" height="32"/>
+                                                        <rect key="frame" x="416" y="0.0" width="18" height="18"/>
                                                         <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="CloseLeftTemplate" imagePosition="only" alignment="center" alternateImage="OpenRightTemplate" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="4vp-yf-ZJv">
                                                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
@@ -457,7 +453,7 @@
                                         <subviews>
                                             <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0oS-10-PFy">
                                                 <rect key="frame" x="0.0" y="0.0" width="442" height="135"/>
-                                                <clipView key="contentView" id="IGZ-po-v1k">
+                                                <clipView key="contentView" drawsBackground="NO" id="IGZ-po-v1k">
                                                     <rect key="frame" x="0.0" y="0.0" width="442" height="135"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
@@ -465,7 +461,7 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="442" height="135"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <size key="minSize" width="442" height="135"/>
                                                             <size key="maxSize" width="705" height="10000000"/>
                                                             <attributedString key="textStorage">
@@ -484,16 +480,15 @@
                                                                     </attributes>
                                                                 </fragment>
                                                             </attributedString>
-                                                            <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                         </textView>
                                                     </subviews>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="pMa-cS-a2q">
+                                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="pMa-cS-a2q">
                                                     <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
-                                                <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="SWM-gY-A1g">
+                                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="SWM-gY-A1g">
                                                     <rect key="frame" x="426" y="0.0" width="16" height="135"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
@@ -537,27 +532,27 @@
                                                                     <rect key="frame" x="77" y="45" width="145" height="18"/>
                                                                     <buttonCell key="cell" type="check" title="Amortized Time" bezelStyle="regularSquare" imagePosition="left" controlSize="small" lineBreakMode="truncatingTail" state="on" inset="2" id="nrp-aL-Kdv">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                 </button>
                                                                 <button horizontalCompressionResistancePriority="1000" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yoe-pf-gNz">
                                                                     <rect key="frame" x="77" y="27" width="145" height="18"/>
                                                                     <buttonCell key="cell" type="check" title="Logarithmic Size Scale" bezelStyle="regularSquare" imagePosition="left" controlSize="small" lineBreakMode="truncatingTail" state="on" inset="2" id="Ixz-pL-tE7">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                 </button>
                                                                 <button horizontalCompressionResistancePriority="1000" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C6h-TX-Zqx">
                                                                     <rect key="frame" x="77" y="9" width="145" height="18"/>
                                                                     <buttonCell key="cell" type="check" title="Logarithmic Time Scale" bezelStyle="regularSquare" imagePosition="left" controlSize="small" lineBreakMode="truncatingTail" state="on" inset="2" id="TEl-QG-oaH">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                 </button>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="s86-oU-Wcn">
                                                                     <rect key="frame" x="10" y="68" width="66" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Theme" usesSingleLineMode="YES" id="Ucz-pc-Th0">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -566,7 +561,7 @@
                                                                     <rect key="frame" x="77" y="63" width="146" height="22"/>
                                                                     <popUpButtonCell key="cell" type="push" title="Screen" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="KsZ-yq-7oO" id="JXP-Cc-hsp">
                                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <menu key="menu" id="tn4-RR-Qfm">
                                                                             <items>
                                                                                 <menuItem title="Screen" state="on" id="KsZ-yq-7oO"/>
@@ -579,7 +574,7 @@
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uIM-tN-3v8">
                                                                     <rect key="frame" x="10" y="47" width="66" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Scales" usesSingleLineMode="YES" id="GC1-N7-mQr">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -623,7 +618,7 @@
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VKH-kE-HYX">
                                                                     <rect key="frame" x="10" y="38" width="66" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Main Curve" usesSingleLineMode="YES" id="OOb-0T-xBV">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -632,7 +627,7 @@
                                                                     <rect key="frame" x="77" y="33" width="146" height="22"/>
                                                                     <popUpButtonCell key="cell" type="push" title="Average" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="2kt-vq-URW" id="uB0-rf-eeP">
                                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <menu key="menu" id="22b-Sl-ZrH">
                                                                             <items>
                                                                                 <menuItem title="Average" state="on" id="2kt-vq-URW"/>
@@ -645,7 +640,7 @@
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zf6-no-vxx">
                                                                     <rect key="frame" x="10" y="14" width="66" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Error Band" usesSingleLineMode="YES" id="Bbg-np-KbA">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -654,7 +649,7 @@
                                                                     <rect key="frame" x="77" y="9" width="146" height="22"/>
                                                                     <popUpButtonCell key="cell" type="push" title="μ + 2σ" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="LJ1-yr-dHJ" id="rNE-UJ-Cdg">
                                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <menu key="menu" id="7KV-1i-deq">
                                                                             <items>
                                                                                 <menuItem title="μ + 2σ" state="on" id="LJ1-yr-dHJ"/>
@@ -698,7 +693,7 @@
                                                                     <rect key="frame" x="77" y="71" width="73" height="22"/>
                                                                     <popUpButtonCell key="cell" type="push" title="min" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Oaa-10-t5l" id="PKa-n5-p5Q">
                                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <menu key="menu" id="MLQ-oY-kq4">
                                                                             <items>
                                                                                 <menuItem title="min" state="on" id="Oaa-10-t5l"/>
@@ -712,7 +707,7 @@
                                                                     <rect key="frame" x="150" y="71" width="73" height="22"/>
                                                                     <popUpButtonCell key="cell" type="push" title="max" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="fGR-i9-fwe" id="tnb-bG-fRW">
                                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <menu key="menu" id="uyO-xG-dcP">
                                                                             <items>
                                                                                 <menuItem title="max" state="on" id="fGR-i9-fwe"/>
@@ -726,20 +721,20 @@
                                                                     <rect key="frame" x="77" y="113" width="145" height="18"/>
                                                                     <buttonCell key="cell" type="check" title="Show All Data Points" bezelStyle="regularSquare" imagePosition="left" controlSize="small" lineBreakMode="truncatingTail" state="on" inset="2" id="ZD9-3l-CEe">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                 </button>
                                                                 <button horizontalCompressionResistancePriority="1000" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UQn-gg-3xi">
                                                                     <rect key="frame" x="77" y="131" width="145" height="18"/>
                                                                     <buttonCell key="cell" type="check" title="Show Current Range" bezelStyle="regularSquare" imagePosition="left" controlSize="small" lineBreakMode="truncatingTail" state="on" inset="2" id="XOL-iG-yz1">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                 </button>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jzq-kT-vVC">
                                                                     <rect key="frame" x="10" y="133" width="66" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Sizes" usesSingleLineMode="YES" id="4gC-vd-Rqg">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -748,14 +743,14 @@
                                                                     <rect key="frame" x="77" y="95" width="145" height="18"/>
                                                                     <buttonCell key="cell" type="check" title="Show Specific Range" bezelStyle="regularSquare" imagePosition="left" controlSize="small" lineBreakMode="truncatingTail" state="on" inset="2" id="9Cu-y9-Lxz">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                 </button>
                                                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="osj-ll-OyZ">
                                                                     <rect key="frame" x="77" y="3" width="73" height="22"/>
                                                                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="cNe-zs-xSi" id="JqB-QS-x7P">
                                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <menu key="menu" id="Og5-5G-bq4">
                                                                             <items>
                                                                                 <menuItem title="Item 1" state="on" id="cNe-zs-xSi"/>
@@ -769,7 +764,7 @@
                                                                     <rect key="frame" x="150" y="3" width="73" height="22"/>
                                                                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="j4U-v6-srX" id="5ui-Mt-hLj">
                                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <menu key="menu" id="6FQ-4a-uyP">
                                                                             <items>
                                                                                 <menuItem title="Item 1" state="on" id="j4U-v6-srX"/>
@@ -783,14 +778,14 @@
                                                                     <rect key="frame" x="77" y="45" width="145" height="18"/>
                                                                     <buttonCell key="cell" type="check" title="Show All Data Points" bezelStyle="regularSquare" imagePosition="left" controlSize="small" lineBreakMode="truncatingTail" state="on" inset="2" id="XP0-bk-Ugk">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                 </button>
                                                                 <button horizontalCompressionResistancePriority="1000" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b6l-n7-Sbw">
                                                                     <rect key="frame" x="77" y="27" width="145" height="18"/>
                                                                     <buttonCell key="cell" type="check" title="Show Specific Range" bezelStyle="regularSquare" imagePosition="left" controlSize="small" lineBreakMode="truncatingTail" state="on" inset="2" id="obH-vD-LOl">
                                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                     </buttonCell>
                                                                 </button>
                                                                 <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="eRa-Fp-l1V">
@@ -799,7 +794,7 @@
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zkU-K6-gxZ">
                                                                     <rect key="frame" x="10" y="47" width="66" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Times" usesSingleLineMode="YES" id="xHa-fd-MUL">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -859,9 +854,9 @@
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yFp-k3-GQm">
-                                                                    <rect key="frame" x="10" y="38" width="66" height="14"/>
+                                                                    <rect key="frame" x="10" y="37" width="66" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Refresh" usesSingleLineMode="YES" id="qTw-3C-GYZ">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -869,23 +864,23 @@
                                                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pmL-ks-XtH">
                                                                     <rect key="frame" x="80" y="35" width="67" height="19"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="5s" drawsBackground="YES" usesSingleLineMode="YES" id="exA-zD-jch">
-                                                                        <font key="font" metaFont="smallSystem"/>
-                                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LqM-Y8-dzp">
                                                                     <rect key="frame" x="153" y="35" width="67" height="19"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="5s" drawsBackground="YES" usesSingleLineMode="YES" id="IlV-ZQ-fDg">
-                                                                        <font key="font" metaFont="smallSystem"/>
-                                                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iY7-cp-jfD">
                                                                     <rect key="frame" x="78" y="18" width="51" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Progress" id="taD-LA-5Ia">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -893,7 +888,7 @@
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="00s-1d-jY4">
                                                                     <rect key="frame" x="151" y="18" width="34" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Chart" id="KR1-cV-yQJ">
-                                                                        <font key="font" metaFont="smallSystem"/>
+                                                                        <font key="font" metaFont="message" size="11"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -1028,7 +1023,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <popUpButtonCell key="cell" type="roundTextured" title="1k" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="PUJ-r1-aBl" id="aoX-pq-auK">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="menu"/>
+                                <font key="font" metaFont="system"/>
                                 <menu key="menu" id="Un1-7b-diG">
                                     <items>
                                         <menuItem title="1k" state="on" id="PUJ-r1-aBl"/>
@@ -1047,7 +1042,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <popUpButtonCell key="cell" type="roundTextured" title="1k" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="uq1-Ju-POB" id="a3g-bY-fUH">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="menu"/>
+                                <font key="font" metaFont="system"/>
                                 <menu key="menu" id="BfR-0m-hVm">
                                     <items>
                                         <menuItem title="1k" state="on" id="uq1-Ju-POB"/>

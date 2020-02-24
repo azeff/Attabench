@@ -5,10 +5,12 @@
 import Foundation
 
 class RateLimiter: NSObject {
+    
     var maxDelay: TimeInterval {
         didSet { now() }
     }
-    let action: () -> Void
+    
+    private let action: () -> Void
     private var scheduled = false
     private var async = false
     private var performing = false
@@ -20,29 +22,24 @@ class RateLimiter: NSObject {
         self.action = action
     }
 
-    private func cancel() {
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(RateLimiter.now), object: nil)
-        scheduled = false
-    }
-
-    private func _now() {
-        self.action()
-        self.next = Date(timeIntervalSinceNow: self.maxDelay)
-    }
-
     @objc func now() {
-        if performing { return }
+        guard !performing else { return }
+        
         cancel()
         if async {
             performing = true
             DispatchQueue.main.async {
-                self._now()
+                self.performAction()
                 self.performing = false
             }
+        } else {
+            performAction()
         }
-        else {
-            _now()
-        }
+    }
+
+    private func performAction() {
+        action()
+        next = Date(timeIntervalSinceNow: self.maxDelay)
     }
 
     func later() {
@@ -51,8 +48,7 @@ class RateLimiter: NSObject {
         let now = Date()
         if next < now {
             self.now()
-        }
-        else {
+        } else {
             self.perform(#selector(RateLimiter.now), with: nil, afterDelay: next.timeIntervalSince(now))
             scheduled = true
         }
@@ -60,5 +56,10 @@ class RateLimiter: NSObject {
 
     func nowIfNeeded() {
         if scheduled { now() }
+    }
+
+    private func cancel() {
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(RateLimiter.now), object: nil)
+        scheduled = false
     }
 }

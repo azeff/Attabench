@@ -6,13 +6,6 @@ import Cocoa
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
-    }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
-    }
     
     func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
         if sender.windows.isEmpty {
@@ -22,7 +15,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return false // But automatic app termination may do it anyway. That's fine.
+        // But automatic app termination may do it anyway. That's fine.
+        return false
     }
 }
 

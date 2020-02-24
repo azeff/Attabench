@@ -20,7 +20,7 @@ extension ChartView: NSDraggingSource, NSPasteboardWriting, NSFilePromiseProvide
     }
 
     func ignoreModifierKeys(for session: NSDraggingSession) -> Bool {
-        return true
+        true
     }
 
     func save(_ data: Data, to destination: URL, withExtension pathExtension: String) throws -> String {
@@ -38,15 +38,15 @@ extension ChartView: NSDraggingSource, NSPasteboardWriting, NSFilePromiseProvide
     }
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
-        return true
+        true
     }
 
     override func shouldDelayWindowOrdering(for event: NSEvent) -> Bool {
-        return true
+        true
     }
 
     override func mouseDown(with event: NSEvent) {
-        self.downEvent = event
+        downEvent = event
     }
 
     override func mouseDragged(with event: NSEvent) {
@@ -81,10 +81,6 @@ extension ChartView: NSDraggingSource, NSPasteboardWriting, NSFilePromiseProvide
                                          size: iconSize)
         imageItem.imageComponentsProvider = iconProvider
 
-//        dragPromisedFiles(ofTypes: ["png", "pdf"],
-//                          from: CGRect(x: start.x - 26, y: start.y - 12, width: 32, height: 32),
-//                          source: self, slideBack: true, event: downEvent)
-//
         beginDraggingSession(with: [imageItem], event: downEvent, source: self)
     }
 

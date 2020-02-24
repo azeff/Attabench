@@ -12,70 +12,47 @@ class ChartView: NSView {
     
     var documentBasename: String = "Benchmark"
 
-    private var modelCancellables: Set<AnyCancellable> = []
-    
-    var model: Attaresult? {
+    override var frame: NSRect {
         didSet {
-            modelCancellables = []
-            if let model = model {
-                model.chartOptionsTick
-                    .sink { [unowned self] _ in self.render() }
-                    .store(in: &modelCancellables)
+            if theme.value.imageSize == nil {
+                render()
             }
         }
     }
     
-    private var themeCancellables: Set<AnyCancellable> = []
-    
-    var theme = CurrentValueSubject<BenchmarkTheme, Never>(BenchmarkTheme.Predefined.screen) {
-        didSet {
-            themeCancellables = []
-            theme.sink { [unowned self] _ in self.render() }
-                .store(in: &themeCancellables)
-        }
-    }
+    let theme = CurrentValueSubject<BenchmarkTheme, Never>(BenchmarkTheme.Predefined.screen)
 
     var chart: BenchmarkChart? = nil {
-        didSet {
-            self.render()
-        }
+        didSet { render() }
     }
 
     var image: NSImage? = nil {
-        didSet {
-            self.needsDisplay = true
-        }
+        didSet { needsDisplay = true }
     }
 
     @IBInspectable
     var backgroundColor: NSColor = .clear {
-        didSet {
-            self.needsDisplay = true
-        }
+        didSet { needsDisplay = true }
     }
 
     var downEvent: NSEvent? = nil
 
-    func render() {
-        self.image = render(at: theme.value.imageSize ?? self.bounds.size)
+    private var cancellables: Set<AnyCancellable> = []
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        
+        theme.sink { [unowned self] _ in self.render() }
+            .store(in: &cancellables)
     }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
 
-    func render(at size: CGSize) -> NSImage? {
-        guard let chart = self.chart else { return nil }
-        var options = BenchmarkRenderer.Options()
-        let legendMargin = min(0.05 * size.width, 0.05 * size.height)
-        options.showTitle = false
-        options.legendPosition = chart.tasks.count > 10 ? .hidden : .topLeft
-        options.legendHorizontalMargin = legendMargin
-        options.legendVerticalMargin = legendMargin
-
-        let renderer = BenchmarkRenderer(chart: chart,
-                                         theme: self.theme.value,
-                                         options: options,
-                                         in: CGRect(origin: .zero, size: size))
-        return renderer.image
+        theme.sink { [unowned self] _ in self.render() }
+            .store(in: &cancellables)
     }
-
+    
     override func draw(_ dirtyRect: NSRect) {
         // Draw background.
         self.backgroundColor.setFill()
@@ -92,14 +69,24 @@ class ChartView: NSView {
                                   size: fitSize))
         }
     }
+    
+    private func render() {
+        self.image = render(at: theme.value.imageSize ?? self.bounds.size)
+    }
 
-    override var frame: NSRect {
-        get { return super.frame }
-        set {
-            super.frame = newValue
-            if theme.value.imageSize == nil {
-                render()
-            }
-        }
+    private func render(at size: CGSize) -> NSImage? {
+        guard let chart = self.chart else { return nil }
+        var options = BenchmarkRenderer.Options()
+        let legendMargin = min(0.05 * size.width, 0.05 * size.height)
+        options.showTitle = false
+        options.legendPosition = chart.tasks.count > 10 ? .hidden : .topLeft
+        options.legendHorizontalMargin = legendMargin
+        options.legendVerticalMargin = legendMargin
+
+        let renderer = BenchmarkRenderer(chart: chart,
+                                         theme: self.theme.value,
+                                         options: options,
+                                         in: CGRect(origin: .zero, size: size))
+        return renderer.image
     }
 }

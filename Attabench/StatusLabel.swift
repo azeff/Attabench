@@ -5,23 +5,25 @@
 import Cocoa
 
 class StatusLabel: NSTextField {
-    private var _status: String = ""
+    
+    private var status: String = ""
+    
     private lazy var refreshStatus = RateLimiter(maxDelay: 0.1) { [unowned self] in
-        self.stringValue = self._status
+        self.stringValue = self.status
     }
 
     var refreshRate: TimeInterval {
-        get { return refreshStatus.maxDelay }
+        get { refreshStatus.maxDelay }
         set { refreshStatus.maxDelay = newValue }
     }
 
     // Rate-limited status setter. Helpful if you need to update status frequently without consuming too much CPU.
     var lazyStatus: String {
         get {
-            return _status
+            status
         }
         set {
-            _status = newValue
+            status = newValue
             refreshStatus.later()
         }
     }
@@ -29,10 +31,10 @@ class StatusLabel: NSTextField {
     // Update status text immediately.
     var immediateStatus: String {
         get {
-            return _status
+            status
         }
         set {
-            _status = newValue
+            status = newValue
             refreshStatus.now()
         }
     }

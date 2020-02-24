@@ -7,17 +7,20 @@ import Cocoa
 @IBDesignable
 class ColoredView: NSView {
 
-
     @IBInspectable
     var backgroundColor: NSColor = .clear {
         didSet {
-            setNeedsDisplay(self.bounds)
+            layer?.backgroundColor = backgroundColor.cgColor
         }
     }
 
-    override func draw(_ dirtyRect: NSRect) {
-        self.backgroundColor.setFill()
-        dirtyRect.fill()
-        super.draw(dirtyRect)
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        wantsLayer = true
     }
 }

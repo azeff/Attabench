@@ -16,8 +16,6 @@ enum UTI {
     static let attaresult = "org.attaswift.attabench-results"
 }
 
-let attaresultExtension = NSWorkspace.shared.preferredFilenameExtension(forType: UTI.attaresult)!
-
 enum ConsoleAttributes {
     private static let indentedParagraphStyle: NSParagraphStyle = {
         let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
@@ -26,29 +24,31 @@ enum ConsoleAttributes {
         return style
     }()
     static let standardOutput: [NSAttributedString.Key: Any] = [
-        .font: NSFont(name: "Menlo-Regular", size: 12) ?? NSFont.systemFont(ofSize: 12, weight: .regular),
-        .foregroundColor: NSColor(white: 0.3, alpha: 1),
+        .font: NSFont.systemFont(ofSize: 12, weight: .regular),
+        .foregroundColor: NSColor.tertiaryLabelColor,
         .paragraphStyle: indentedParagraphStyle
     ]
     static let standardError: [NSAttributedString.Key: Any] = [
-        .font: NSFont(name: "Menlo-Bold", size: 12) ?? NSFont.systemFont(ofSize: 12, weight: .bold),
-        .foregroundColor: NSColor(white: 0.3, alpha: 1),
+        .font: NSFont.systemFont(ofSize: 12, weight: .bold),
+        .foregroundColor: NSColor.secondaryLabelColor,
         .paragraphStyle: indentedParagraphStyle
     ]
     static let statusMessage: [NSAttributedString.Key: Any] = [
         .font: NSFont.systemFont(ofSize: 12, weight: .medium),
-        .foregroundColor: NSColor.black,
+        .foregroundColor: NSColor.labelColor,
         .paragraphStyle: NSParagraphStyle.default
     ]
     static let errorMessage: [NSAttributedString.Key: Any] = [
         .font: NSFont.systemFont(ofSize: 12, weight: .bold),
-        .foregroundColor: NSColor.black,
+        .foregroundColor: NSColor.labelColor,
         .paragraphStyle: NSParagraphStyle.default
     ]
 }
 
 struct TaskFilter {
+    
     typealias Pattern = (string: String, isNegative: Bool)
+    
     let patterns: [[Pattern]]
 
     init(_ pattern: String?) {
@@ -69,6 +69,7 @@ struct TaskFilter {
 
     func test(_ task: Task) -> Bool {
         guard !patterns.isEmpty else { return true }
+        
         let name = task.name.lowercased()
         return patterns.contains { (conjunctive: [Pattern]) -> Bool in
             !conjunctive.contains { (pattern: Pattern) -> Bool in
@@ -80,7 +81,7 @@ struct TaskFilter {
 
 class AttabenchDocument: NSDocument, BenchmarkDelegate {
 
-    enum State {
+    private enum State {
         case noBenchmark
         case idle
         case loading(BenchmarkProcess)
@@ -105,36 +106,88 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
         }
     }
 
-    var state: State = .noBenchmark {
-        didSet { stateDidChange(from: oldValue, to: state) }
+    override var windowNibName: NSNib.Name? {
+        // Returns the nib file name of the document
+        // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this property and override -makeWindowControllers instead.
+        return "AttabenchDocument"
     }
-    var activity: NSObjectProtocol? // Preventing system sleep
+
+    @IBOutlet var runButton: NSButton!
+    @IBOutlet var minimumSizeButton: NSPopUpButton!
+    @IBOutlet var maximumSizeButton: NSPopUpButton!
+    @IBOutlet var rootSplitView: NSSplitView!
+
+    @IBOutlet var leftPane: NSVisualEffectView!
+    @IBOutlet var leftVerticalSplitView: NSSplitView!
+    @IBOutlet var tasksTableView: NSTableView!
+    @IBOutlet var leftBar: ColoredView!
+    @IBOutlet var batchCheckbox: NSButtonCell!
+    @IBOutlet var taskFilterTextField: NSSearchField!
+    @IBOutlet var showRunOptionsButton: NSButton!
+    @IBOutlet var runOptionsPane: ColoredView!
+    @IBOutlet var iterationsField: NSTextField!
+    @IBOutlet var iterationsStepper: NSStepper!
+    @IBOutlet var minimumDurationField: NSTextField!
+    @IBOutlet var maximumDurationField: NSTextField!
+
+    @IBOutlet var middleSplitView: NSSplitView!
+    @IBOutlet var chartView: ChartView!
+    @IBOutlet var middleBar: ColoredView!
+    @IBOutlet var showLeftPaneButton: NSButton!
+    @IBOutlet var showConsoleButton: NSButton!
+    @IBOutlet var statusLabel: StatusLabel!
+    @IBOutlet var showRightPaneButton: NSButton!
+    @IBOutlet var consolePane: NSView!
+    @IBOutlet var consoleTextView: NSTextView!
+
+    @IBOutlet var rightPane: ColoredView!
+    
+    @IBOutlet var themePopUpButton: NSPopUpButton!
+    @IBOutlet var amortizedCheckbox: NSButton!
+    @IBOutlet var logarithmicSizeCheckbox: NSButton!
+    @IBOutlet var logarithmicTimeCheckbox: NSButton!
+
+    @IBOutlet var centerBandPopUpButton: NSPopUpButton!
+    @IBOutlet var errorBandPopUpButton: NSPopUpButton!
+    
+    @IBOutlet var highlightSelectedSizeRangeCheckbox: NSButton!
+    @IBOutlet var displayIncludeAllMeasuredSizesCheckbox: NSButton!
+    @IBOutlet var displayIncludeSizeScaleRangeCheckbox: NSButton!
+    @IBOutlet var displaySizeScaleRangeMinPopUpButton: NSPopUpButton!
+    @IBOutlet var displaySizeScaleRangeMaxPopUpButton: NSPopUpButton!
+
+    @IBOutlet var displayIncludeAllMeasuredTimesCheckbox: NSButton!
+    @IBOutlet var displayIncludeTimeRangeCheckbox: NSButton!
+    @IBOutlet var displayTimeRangeMinPopUpButton: NSPopUpButton!
+    @IBOutlet var displayTimeRangeMaxPopUpButton: NSPopUpButton!
+
+    @IBOutlet var progressRefreshIntervalField: NSTextField!
+    @IBOutlet var chartRefreshIntervalField: NSTextField!
 
     let model = CurrentValueSubject<Attaresult, Never>(Attaresult())
-//    var m: Attaresult {
-//        get { return model.value }
-//        set { model.value = newValue }
-//    }
     
-    let taskFilterString = CurrentValueSubject<String?, Never>(nil)
-    let taskFilter = CurrentValueSubject<TaskFilter, Never>(TaskFilter(nil))
+    private var state: State = .noBenchmark {
+        didSet { stateDidChange(from: oldValue, to: state) }
+    }
+    
+    private var activity: NSObjectProtocol? // Preventing system sleep
+
+    private let taskFilterString = CurrentValueSubject<String?, Never>(nil)
+    private let taskFilter = CurrentValueSubject<TaskFilter, Never>(TaskFilter(nil))
     
     let visibleTasks = CurrentValueSubject<[Task], Never>([])
-    let checkedTasks = CurrentValueSubject<[Task], Never>([])
-    let tasksToRun = CurrentValueSubject<[Task], Never>([])
+    private let checkedTasks = CurrentValueSubject<[Task], Never>([])
+    private let tasksToRun = CurrentValueSubject<[Task], Never>([])
 
-    let batchCheckboxState = CurrentValueSubject<NSControl.StateValue, Never>(.on)
+    private let batchCheckboxState = CurrentValueSubject<NSControl.StateValue, Never>(.on)
 
-    let theme = CurrentValueSubject<BenchmarkTheme, Never>(BenchmarkTheme.Predefined.screen)
+    private let theme = CurrentValueSubject<BenchmarkTheme, Never>(BenchmarkTheme.Predefined.screen)
 
-    var _log: NSMutableAttributedString? = nil
-    var _status: String = "Ready"
+    private lazy var refreshChart = RateLimiter(maxDelay: 5, async: true) { [unowned self] in self._refreshChart() }
+    private var tasksTableViewController: CombineTableViewController<Task, TaskCellView>?
 
-    lazy var refreshChart = RateLimiter(maxDelay: 5, async: true) { [unowned self] in self._refreshChart() }
-    var tasksTableViewController: GlueKitTableViewController<Task, TaskCellView>?
-
-    var pendingResults: [(task: String, size: Int, time: Time)] = []
-    lazy var processPendingResults = RateLimiter(maxDelay: 0.2) { [unowned self] in
+    private var pendingResults: [(task: String, size: Int, time: Time)] = []
+    private lazy var processPendingResults = RateLimiter(maxDelay: 0.2) { [unowned self] in
         for (task, size, time) in self.pendingResults {
             self.model.value.addMeasurement(time, forTask: task, size: size)
         }
@@ -143,62 +196,21 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
         self.refreshChart.later()
     }
 
-    @IBOutlet weak var runButton: NSButton?
-    @IBOutlet weak var minimumSizeButton: NSPopUpButton?
-    @IBOutlet weak var maximumSizeButton: NSPopUpButton?
-    @IBOutlet weak var rootSplitView: NSSplitView?
+    private var _log: NSMutableAttributedString? = nil
+    private var _status: String = "Ready"
 
-    @IBOutlet weak var leftPane: NSVisualEffectView?
-    @IBOutlet weak var leftVerticalSplitView: NSSplitView?
-    @IBOutlet weak var tasksTableView: NSTableView?
-    @IBOutlet weak var leftBar: ColoredView?
-    @IBOutlet weak var batchCheckbox: NSButtonCell!
-    @IBOutlet weak var taskFilterTextField: NSSearchField!
-    @IBOutlet weak var showRunOptionsButton: NSButton?
-    @IBOutlet weak var runOptionsPane: ColoredView?
-    @IBOutlet weak var iterationsField: NSTextField?
-    @IBOutlet weak var iterationsStepper: NSStepper?
-    @IBOutlet weak var minimumDurationField: NSTextField?
-    @IBOutlet weak var maximumDurationField: NSTextField?
-
-    @IBOutlet weak var middleSplitView: NSSplitView?
-    @IBOutlet weak var chartView: ChartView?
-    @IBOutlet weak var middleBar: ColoredView?
-    @IBOutlet weak var showLeftPaneButton: NSButton?
-    @IBOutlet weak var showConsoleButton: NSButton?
-    @IBOutlet weak var statusLabel: StatusLabel?
-    @IBOutlet weak var showRightPaneButton: NSButton?
-    @IBOutlet weak var consolePane: NSView?
-    @IBOutlet weak var consoleTextView: NSTextView?
-
-    @IBOutlet weak var rightPane: ColoredView?
-    
-    @IBOutlet weak var themePopUpButton: NSPopUpButton?
-    @IBOutlet weak var amortizedCheckbox: NSButton?
-    @IBOutlet weak var logarithmicSizeCheckbox: NSButton?
-    @IBOutlet weak var logarithmicTimeCheckbox: NSButton?
-
-    @IBOutlet weak var centerBandPopUpButton: NSPopUpButton?
-    @IBOutlet weak var errorBandPopUpButton: NSPopUpButton?
-    
-    @IBOutlet weak var highlightSelectedSizeRangeCheckbox: NSButton?
-    @IBOutlet weak var displayIncludeAllMeasuredSizesCheckbox: NSButton?
-    @IBOutlet weak var displayIncludeSizeScaleRangeCheckbox: NSButton?
-    @IBOutlet weak var displaySizeScaleRangeMinPopUpButton: NSPopUpButton?
-    @IBOutlet weak var displaySizeScaleRangeMaxPopUpButton: NSPopUpButton?
-
-    @IBOutlet weak var displayIncludeAllMeasuredTimesCheckbox: NSButton?
-    @IBOutlet weak var displayIncludeTimeRangeCheckbox: NSButton?
-    @IBOutlet weak var displayTimeRangeMinPopUpButton: NSPopUpButton?
-    @IBOutlet weak var displayTimeRangeMaxPopUpButton: NSPopUpButton?
-
-    @IBOutlet weak var progressRefreshIntervalField: NSTextField?
-    @IBOutlet weak var chartRefreshIntervalField: NSTextField?
-
-    // ---------
-    
     private var cancellables = Set<AnyCancellable>()
-    
+        
+    override init() {
+        super.init()
+        
+        privateInit()
+    }
+
+    deinit {
+        self.state = .idle
+    }
+
     private func privateInit() {
         taskFilterString
             .map(TaskFilter.init)
@@ -231,22 +243,34 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
         let visibleCount = visibleTasks.map(\.count)
         let checkedCount = checkedTasks.map(\.count)
         visibleCount
-            .combineLatest(checkedCount) { c1, c2 in
-                if c1 == c2 { return .on }
-                if c2 == 0 { return .off }
+            .combineLatest(checkedCount) { visibleCount, checkedCount in
+                if visibleCount == checkedCount { return .on }
+                if checkedCount == 0 { return .off }
                 return .mixed
             }
             .subscribe(batchCheckboxState)
             .store(in: &cancellables)
     }
     
-    // -----------
-    
-    override init() {
-        super.init()
-        
-        privateInit()
+    // FIXME: EK - Holy moly, this is a big one.
+    override func windowControllerDidLoadNib(_ windowController: NSWindowController) {
+        super.windowControllerDidLoadNib(windowController)
 
+        consoleTextView.textStorage!.setAttributedString(_log ?? NSAttributedString())
+        let tasksTVC = CombineTableViewController<Task, TaskCellView>(tableView: tasksTableView!, contents: visibleTasks) { [unowned self] cell, item in
+            cell.task = item
+            cell.context = self
+        }
+        self.tasksTableViewController = tasksTVC
+        self.tasksTableView.delegate = tasksTVC
+        self.tasksTableView.dataSource = tasksTVC
+        self.statusLabel.immediateStatus = _status
+        self.chartView.documentBasename = self.displayName
+//        self.chartView.theme = self.theme
+        self.batchCheckbox.state = self.batchCheckboxState.value
+
+        theme.subscribe(self.chartView.theme).store(in: &cancellables)
+        
         // TODO: EK - why data flows this way? Shouldn't it be the other way around?
         theme.map(\.name).subscribe(model.value.themeName).store(in: &cancellables)
 //        self.glue.connector.connect(self.theme.values) { [unowned self] theme in
@@ -292,7 +316,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
         batchCheckboxState
             .dropFirst(1)
             .sink { [unowned self] state in
-                self.batchCheckbox?.state = state
+                self.batchCheckbox.state = state
             }
             .store(in: &cancellables)
         
@@ -318,7 +342,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             .map(\.progressRefreshInterval)
             .switchToLatest()
             .sink { [unowned self] interval in
-                self.statusLabel?.refreshRate = interval.seconds
+                self.statusLabel.refreshRate = interval.seconds
                 self.processPendingResults.maxDelay = interval.seconds
             }
             .store(in: &cancellables)
@@ -333,214 +357,97 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
                 self.refreshChart.maxDelay = interval.seconds
             }
             .store(in: &cancellables)
-    }
-
-    deinit {
-        self.state = .idle
-    }
-
-    override var windowNibName: NSNib.Name? {
-        // Returns the nib file name of the document
-        // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this property and override -makeWindowControllers instead.
-        return "AttabenchDocument"
-    }
-
-    @objc
-    private func didChangeIterationsStepper() {
-        guard let iterations = self.iterationsStepper?.objectValue as? Int else { return }
-        model.value.iterations.value = iterations
-    }
-    
-    @objc
-    private func didChangeMinDuration() {
-        guard
-            let lowerBoundString = self.minimumDurationField?.stringValue,
-            let lowerBound = Time(lowerBoundString)
-            else { return }
-        model.value.durationRange.lowerBound = lowerBound
-    }
-    
-    @objc
-    private func didChangeMaxDuration() {
-        guard
-            let upperBoundString = self.maximumDurationField?.stringValue,
-            let upperBound = Time(upperBoundString)
-            else { return }
-        model.value.durationRange.upperBound = upperBound
-    }
-    
-    @objc
-    private func didChangeAmortizedCheckbox() {
-        guard let state = self.amortizedCheckbox?.state else { return }
-        model.value.amortizedTime.value = state == .on
-    }
-    
-    @objc
-    private func didChangeLogarithmicSizeCheckbox() {
-        guard let state = self.logarithmicSizeCheckbox?.state else { return }
-        model.value.logarithmicSizeScale.value = state == .on
-    }
-    
-    @objc
-    private func didChangeLogarithmicTimeCheckbox() {
-        guard let state = self.logarithmicTimeCheckbox?.state else { return }
-        model.value.logarithmicTimeScale.value = state == .on
-    }
-    
-    @objc
-    private func didChangeProgressRefreshInterval() {
-        guard
-            let intervalString = progressRefreshIntervalField?.stringValue,
-            let intervalTime = Time(intervalString)
-            else { return }
         
-        model.value.progressRefreshInterval.value = intervalTime
-    }
-    
-    @objc
-    private func didChangeChartRefreshInterval() {
-        guard
-            let intervalString = chartRefreshIntervalField?.stringValue,
-            let intervalTime = Time(intervalString)
-            else { return }
         
-        model.value.chartRefreshInterval.value = intervalTime
-    }
-    
-    @objc
-    private func didChangeHighlightSelectedSizeRangeCheckbox() {
-        guard let state = highlightSelectedSizeRangeCheckbox?.state else { return }
-        model.value.highlightSelectedSizeRange.value = state == .on
-    }
-    
-    @objc
-    private func didChangeDisplayIncludeAllMeasuredSizesCheckbox() {
-        guard let state = displayIncludeAllMeasuredSizesCheckbox?.state else { return }
-        model.value.displayIncludeAllMeasuredSizes.value = state == .on
-    }
-    
-    @objc
-    private func didChangeDisplayIncludeSizeScaleRangeCheckbox() {
-        guard let state = displayIncludeSizeScaleRangeCheckbox?.state else { return }
-        model.value.displayIncludeSizeScaleRange.value = state == .on
-    }
-    
-    @objc
-    private func didChangeDisplayIncludeAllMeasuredTimesCheckbox() {
-        guard let state = displayIncludeAllMeasuredTimesCheckbox?.state else { return }
-        model.value.displayIncludeAllMeasuredTimes.value = state == .on
-    }
-    
-    @objc
-    private func didChangeDisplayIncludeTimeRangeCheckbox() {
-        guard let state = displayIncludeTimeRangeCheckbox?.state else { return }
-        model.value.displayIncludeTimeRange.value = state == .on
-    }
-    
-    override func windowControllerDidLoadNib(_ windowController: NSWindowController) {
-        super.windowControllerDidLoadNib(windowController)
-        consoleTextView!.textStorage!.setAttributedString(_log ?? NSAttributedString())
-        let tasksTVC = GlueKitTableViewController<Task, TaskCellView>(tableView: tasksTableView!, contents: visibleTasks) { [unowned self] cell, item in
-            cell.task = item
-            cell.context = self
-        }
-        self.tasksTableViewController = tasksTVC
-        self.tasksTableView!.delegate = tasksTVC
-        self.tasksTableView!.dataSource = tasksTVC
-        self.statusLabel!.immediateStatus = _status
-        self.chartView!.documentBasename = self.displayName
-        self.chartView!.theme = self.theme
-        self.batchCheckbox.state = self.batchCheckboxState.value
-
         let iterations = model.map(\.iterations).switchToLatest()
 //        self.iterationsField!.glue.value <-- model.map{$0.iterations}
         iterations
             .sink { [unowned self] iterations in
-                self.iterationsField?.stringValue = String(iterations)
+                self.iterationsField.stringValue = String(iterations)
             }
             .store(in: &cancellables)
 //        self.iterationsStepper!.glue.intValue <-- model.map{$0.iterations}
         iterations
             .sink { [unowned self] iterations in
-                self.iterationsStepper?.intValue = Int32(iterations)
+                self.iterationsStepper.intValue = Int32(iterations)
             }
             .store(in: &cancellables)
-        iterationsStepper?.target = self
-        iterationsStepper?.action = #selector(didChangeIterationsStepper)
+        iterationsStepper.target = self
+        iterationsStepper.action = #selector(didChangeIterationsStepper)
 
         let durationRange = model.map(\.durationRange)
 //        self.minimumDurationField!.glue.value <-- model.map{$0.durationRange.lowerBound}
         durationRange
             .sink { [unowned self] range in
-                self.minimumDurationField?.stringValue = String(range.lowerBound)
+                self.minimumDurationField.stringValue = String(range.lowerBound)
             }
             .store(in: &cancellables)
-        minimumDurationField?.target = self
-        minimumDurationField?.action = #selector(didChangeMinDuration)
+        minimumDurationField.target = self
+        minimumDurationField.action = #selector(didChangeMinDuration)
         
 //        self.maximumDurationField!.glue.value <-- model.map{$0.durationRange.upperBound}
         durationRange
             .sink { [unowned self] range in
-                self.maximumDurationField?.stringValue = String(range.upperBound)
+                self.maximumDurationField.stringValue = String(range.upperBound)
             }
             .store(in: &cancellables)
-        minimumDurationField?.target = self
-        minimumDurationField?.action = #selector(didChangeMaxDuration)
+        minimumDurationField.target = self
+        minimumDurationField.action = #selector(didChangeMaxDuration)
 
 //        self.amortizedCheckbox!.glue.state <-- model.map{$0.amortizedTime}
         model
             .map(\.amortizedTime)
             .switchToLatest()
             .sink { [unowned self] amortizedTime in
-                self.amortizedCheckbox?.state = amortizedTime ? .on : .off
+                self.amortizedCheckbox.state = amortizedTime ? .on : .off
             }
             .store(in: &cancellables)
-        amortizedCheckbox?.target = self
-        amortizedCheckbox?.action = #selector(didChangeAmortizedCheckbox)
+        amortizedCheckbox.target = self
+        amortizedCheckbox.action = #selector(didChangeAmortizedCheckbox)
         
 //        self.logarithmicSizeCheckbox!.glue.state <-- model.map{$0.logarithmicSizeScale}
         model
             .map(\.logarithmicSizeScale)
             .switchToLatest()
             .sink { [unowned self] scale in
-                self.logarithmicSizeCheckbox?.state = scale ? .on : .off
+                self.logarithmicSizeCheckbox.state = scale ? .on : .off
             }
             .store(in: &cancellables)
-        logarithmicSizeCheckbox?.target = self
-        logarithmicSizeCheckbox?.action = #selector(didChangeLogarithmicSizeCheckbox)
+        logarithmicSizeCheckbox.target = self
+        logarithmicSizeCheckbox.action = #selector(didChangeLogarithmicSizeCheckbox)
 
 //        self.logarithmicTimeCheckbox!.glue.state <-- model.map{$0.logarithmicTimeScale}
         model
             .map(\.logarithmicTimeScale)
             .switchToLatest()
             .sink { [unowned self] scale in
-                self.logarithmicTimeCheckbox?.state = scale ? .on : .off
+                self.logarithmicTimeCheckbox.state = scale ? .on : .off
             }
             .store(in: &cancellables)
-        logarithmicTimeCheckbox?.target = self
-        logarithmicTimeCheckbox?.action = #selector(didChangeLogarithmicTimeCheckbox)
+        logarithmicTimeCheckbox.target = self
+        logarithmicTimeCheckbox.action = #selector(didChangeLogarithmicTimeCheckbox)
 
 //        self.progressRefreshIntervalField!.glue.value <-- model.map{$0.progressRefreshInterval}
         model
             .map(\.progressRefreshInterval)
             .switchToLatest()
             .sink { [unowned self] interval in
-                self.progressRefreshIntervalField?.stringValue = String(interval)
+                self.progressRefreshIntervalField.stringValue = String(interval)
             }
             .store(in: &cancellables)
-        progressRefreshIntervalField?.target = self
-        progressRefreshIntervalField?.action = #selector(didChangeProgressRefreshInterval)
+        progressRefreshIntervalField.target = self
+        progressRefreshIntervalField.action = #selector(didChangeProgressRefreshInterval)
         
 //        self.chartRefreshIntervalField!.glue.value <-- model.map{$0.chartRefreshInterval}
         model
             .map(\.chartRefreshInterval)
             .switchToLatest()
             .sink { [unowned self] interval in
-                self.chartRefreshIntervalField?.stringValue = String(interval)
+                self.chartRefreshIntervalField.stringValue = String(interval)
             }
             .store(in: &cancellables)
-        chartRefreshIntervalField?.target = self
-        chartRefreshIntervalField?.action = #selector(didChangeChartRefreshInterval)
+        chartRefreshIntervalField.target = self
+        chartRefreshIntervalField.action = #selector(didChangeChartRefreshInterval)
 
 //        self.centerBandPopUpButton!.glue <-- NSPopUpButton.Choices<CurveBandValues>(
 //            model: model.map{$0.centerBand}
@@ -567,7 +474,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             menuItem.representedObject = value
             bandMenu.addItem(menuItem)
         }
-        centerBandPopUpButton?.menu = bandMenu
+        centerBandPopUpButton.menu = bandMenu
         func bindCenterBand() {
             model
                 .map(\.centerBand)
@@ -575,12 +482,12 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
                 .sink { [unowned self] band in
                     let value = CurveBandValues(band)
                     guard
-                        let menu = self.centerBandPopUpButton?.menu,
+                        let menu = self.centerBandPopUpButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? CurveBandValues) == value })
                         else { return }
                     
-                    if self.centerBandPopUpButton?.selectedItem != item {
-                        self.centerBandPopUpButton?.select(item)
+                    if self.centerBandPopUpButton.selectedItem != item {
+                        self.centerBandPopUpButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -612,7 +519,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             errorItem.representedObject = value
             errorBandMenu.addItem(errorItem)
         }
-        errorBandPopUpButton?.menu = errorBandMenu
+        errorBandPopUpButton.menu = errorBandMenu
         func bindErrorBand() {
             let topBand = model.map(\.topBand).switchToLatest()
             let bottomBand = model.map(\.bottomBand).switchToLatest()
@@ -622,12 +529,12 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
                 }
                 .sink { [unowned self] value in
                     guard
-                        let menu = self.errorBandPopUpButton?.menu,
+                        let menu = self.errorBandPopUpButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? ErrorBandValues) == value })
                         else { return }
                     
-                    if self.errorBandPopUpButton?.selectedItem != item {
-                        self.errorBandPopUpButton?.select(item)
+                    if self.errorBandPopUpButton.selectedItem != item {
+                        self.errorBandPopUpButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -645,17 +552,17 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             themeItem.representedObject = value
             themeMenu.addItem(themeItem)
         }
-        themePopUpButton?.menu = themeMenu
+        themePopUpButton.menu = themeMenu
         func bindTheme() {
             self.theme
                 .sink { [unowned self] value in
                     guard
-                        let menu = self.themePopUpButton?.menu,
+                        let menu = self.themePopUpButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? BenchmarkTheme) == value })
                         else { return }
                     
-                    if self.themePopUpButton?.selectedItem != item {
-                        self.themePopUpButton?.select(item)
+                    if self.themePopUpButton.selectedItem != item {
+                        self.themePopUpButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -677,18 +584,18 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             minimumSizeItem.representedObject = value
             minimumSizeMenu.addItem(minimumSizeItem)
         }
-        minimumSizeButton?.menu = minimumSizeMenu
+        minimumSizeButton.menu = minimumSizeMenu
         func bindMinimumSize() {
             model.map(\.sizeScaleRange.lowerBoundPublisher)
                 .switchToLatest()
                 .sink { [unowned self] value in
                     guard
-                        let menu = self.minimumSizeButton?.menu,
+                        let menu = self.minimumSizeButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? Int) == value })
                         else { return }
                     
-                    if self.minimumSizeButton?.selectedItem != item {
-                        self.minimumSizeButton?.select(item)
+                    if self.minimumSizeButton.selectedItem != item {
+                        self.minimumSizeButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -705,18 +612,18 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             maximumSizeItem.representedObject = value
             maximumSizeMenu.addItem(maximumSizeItem)
         }
-        maximumSizeButton?.menu = maximumSizeMenu
+        maximumSizeButton.menu = maximumSizeMenu
         func bindMaximumSize() {
             model.map(\.sizeScaleRange.upperBoundPublisher)
                 .switchToLatest()
                 .sink { [unowned self] value in
                     guard
-                        let menu = self.maximumSizeButton?.menu,
+                        let menu = self.maximumSizeButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? Int) == value })
                         else { return }
                     
-                    if self.maximumSizeButton?.selectedItem != item {
-                        self.maximumSizeButton?.select(item)
+                    if self.maximumSizeButton.selectedItem != item {
+                        self.maximumSizeButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -726,29 +633,29 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
 //        self.highlightSelectedSizeRangeCheckbox!.glue.state <-- model.map{$0.highlightSelectedSizeRange}
         model.map(\.highlightSelectedSizeRange).switchToLatest()
             .sink { [unowned self] selected in
-                self.highlightSelectedSizeRangeCheckbox?.state = selected ? .on : .off
+                self.highlightSelectedSizeRangeCheckbox.state = selected ? .on : .off
             }
             .store(in: &cancellables)
-        highlightSelectedSizeRangeCheckbox?.target = self
-        highlightSelectedSizeRangeCheckbox?.action = #selector(didChangeHighlightSelectedSizeRangeCheckbox)
+        highlightSelectedSizeRangeCheckbox.target = self
+        highlightSelectedSizeRangeCheckbox.action = #selector(didChangeHighlightSelectedSizeRangeCheckbox)
         
 //        self.displayIncludeAllMeasuredSizesCheckbox!.glue.state <-- model.map{$0.displayIncludeAllMeasuredSizes}
         model.map(\.displayIncludeAllMeasuredSizes).switchToLatest()
             .sink { [unowned self] selected in
-                self.displayIncludeAllMeasuredSizesCheckbox?.state = selected ? .on : .off
+                self.displayIncludeAllMeasuredSizesCheckbox.state = selected ? .on : .off
             }
             .store(in: &cancellables)
-        displayIncludeAllMeasuredSizesCheckbox?.target = self
-        displayIncludeAllMeasuredSizesCheckbox?.action = #selector(didChangeDisplayIncludeAllMeasuredSizesCheckbox)
+        displayIncludeAllMeasuredSizesCheckbox.target = self
+        displayIncludeAllMeasuredSizesCheckbox.action = #selector(didChangeDisplayIncludeAllMeasuredSizesCheckbox)
 
 //        self.displayIncludeSizeScaleRangeCheckbox!.glue.state <-- model.map{$0.displayIncludeSizeScaleRange}
         model.map(\.displayIncludeSizeScaleRange).switchToLatest()
             .sink { [unowned self] selected in
-                self.displayIncludeSizeScaleRangeCheckbox?.state = selected ? .on : .off
+                self.displayIncludeSizeScaleRangeCheckbox.state = selected ? .on : .off
             }
             .store(in: &cancellables)
-        displayIncludeSizeScaleRangeCheckbox?.target = self
-        displayIncludeSizeScaleRangeCheckbox?.action = #selector(didChangeDisplayIncludeSizeScaleRangeCheckbox)
+        displayIncludeSizeScaleRangeCheckbox.target = self
+        displayIncludeSizeScaleRangeCheckbox.action = #selector(didChangeDisplayIncludeSizeScaleRangeCheckbox)
         
 //        self.displaySizeScaleRangeMinPopUpButton!.glue <-- NSPopUpButton.Choices<Int>(
 //            model: model.map{$0.displaySizeScaleRange.lowerBound},
@@ -760,18 +667,18 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             scaleRangeItem.representedObject = value
             scaleRangeLowerBoundMenu.addItem(scaleRangeItem)
         }
-        displaySizeScaleRangeMinPopUpButton?.menu = scaleRangeLowerBoundMenu
+        displaySizeScaleRangeMinPopUpButton.menu = scaleRangeLowerBoundMenu
         func bindDisplaySizeScaleRangeMin() {
             model.map(\.displaySizeScaleRange.lowerBoundPublisher)
                 .switchToLatest()
                 .sink { [unowned self] value in
                     guard
-                        let menu = self.displaySizeScaleRangeMinPopUpButton?.menu,
+                        let menu = self.displaySizeScaleRangeMinPopUpButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? Int) == value })
                         else { return }
                     
-                    if self.displaySizeScaleRangeMinPopUpButton?.selectedItem != item {
-                        self.displaySizeScaleRangeMinPopUpButton?.select(item)
+                    if self.displaySizeScaleRangeMinPopUpButton.selectedItem != item {
+                        self.displaySizeScaleRangeMinPopUpButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -781,7 +688,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
 //        self.displaySizeScaleRangeMinPopUpButton!.glue.isEnabled <-- model.map{$0.displayIncludeSizeScaleRange}
         model.map(\.displayIncludeSizeScaleRange).switchToLatest()
             .sink { [unowned self] enabled in
-                self.displaySizeScaleRangeMinPopUpButton?.isEnabled = enabled
+                self.displaySizeScaleRangeMinPopUpButton.isEnabled = enabled
             }
             .store(in: &cancellables)
 
@@ -795,18 +702,18 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             scaleRangeItem.representedObject = value
             scaleRangeUpperBoundMenu.addItem(scaleRangeItem)
         }
-        displaySizeScaleRangeMaxPopUpButton?.menu = scaleRangeUpperBoundMenu
+        displaySizeScaleRangeMaxPopUpButton.menu = scaleRangeUpperBoundMenu
         func bindDisplaySizeScaleRangeMax() {
             model.map(\.displaySizeScaleRange.upperBoundPublisher)
                 .switchToLatest()
                 .sink { [unowned self] value in
                     guard
-                        let menu = self.displaySizeScaleRangeMaxPopUpButton?.menu,
+                        let menu = self.displaySizeScaleRangeMaxPopUpButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? Int) == value })
                         else { return }
                     
-                    if self.displaySizeScaleRangeMaxPopUpButton?.selectedItem != item {
-                        self.displaySizeScaleRangeMaxPopUpButton?.select(item)
+                    if self.displaySizeScaleRangeMaxPopUpButton.selectedItem != item {
+                        self.displaySizeScaleRangeMaxPopUpButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -816,7 +723,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
 //        self.displaySizeScaleRangeMaxPopUpButton!.glue.isEnabled <-- model.map{$0.displayIncludeSizeScaleRange}
         model.map(\.displayIncludeSizeScaleRange).switchToLatest()
             .sink { [unowned self] enabled in
-                self.displaySizeScaleRangeMaxPopUpButton?.isEnabled = enabled
+                self.displaySizeScaleRangeMaxPopUpButton.isEnabled = enabled
             }
             .store(in: &cancellables)
 
@@ -830,20 +737,20 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
 //        self.displayIncludeAllMeasuredTimesCheckbox!.glue.state <-- model.map{$0.displayIncludeAllMeasuredTimes}
         model.map(\.displayIncludeAllMeasuredTimes).switchToLatest()
             .sink { [unowned self] checked in
-                self.displayIncludeAllMeasuredTimesCheckbox?.state = checked ? .on : .off
+                self.displayIncludeAllMeasuredTimesCheckbox.state = checked ? .on : .off
             }
             .store(in: &cancellables)
-        displayIncludeAllMeasuredTimesCheckbox?.target = self
-        displayIncludeAllMeasuredTimesCheckbox?.action = #selector(didChangeDisplayIncludeAllMeasuredTimesCheckbox)
+        displayIncludeAllMeasuredTimesCheckbox.target = self
+        displayIncludeAllMeasuredTimesCheckbox.action = #selector(didChangeDisplayIncludeAllMeasuredTimesCheckbox)
 
 //        self.displayIncludeTimeRangeCheckbox!.glue.state <-- model.map{$0.displayIncludeTimeRange}
         model.map(\.displayIncludeTimeRange).switchToLatest()
             .sink { [unowned self] checked in
-                self.displayIncludeTimeRangeCheckbox?.state = checked ? .on : .off
+                self.displayIncludeTimeRangeCheckbox.state = checked ? .on : .off
             }
             .store(in: &cancellables)
-        displayIncludeTimeRangeCheckbox?.target = self
-        displayIncludeTimeRangeCheckbox?.action = #selector(didChangeDisplayIncludeTimeRangeCheckbox)
+        displayIncludeTimeRangeCheckbox.target = self
+        displayIncludeTimeRangeCheckbox.action = #selector(didChangeDisplayIncludeTimeRangeCheckbox)
 
 //        self.displayTimeRangeMinPopUpButton!.glue <-- NSPopUpButton.Choices<Time>(
 //            model: model.map{$0.displayTimeRange.lowerBound},
@@ -855,18 +762,18 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             rangeItem.representedObject = value
             displayTimeLowerBoundMenu.addItem(rangeItem)
         }
-        displayTimeRangeMinPopUpButton?.menu = displayTimeLowerBoundMenu
+        displayTimeRangeMinPopUpButton.menu = displayTimeLowerBoundMenu
         func bindDisplayTimeRangeMin() {
             model.map(\.displayTimeRange.lowerBoundPublisher)
                 .switchToLatest()
                 .sink { [unowned self] value in
                     guard
-                        let menu = self.displayTimeRangeMinPopUpButton?.menu,
+                        let menu = self.displayTimeRangeMinPopUpButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? Time) == value })
                         else { return }
                     
-                    if self.displayTimeRangeMinPopUpButton?.selectedItem != item {
-                        self.displayTimeRangeMinPopUpButton?.select(item)
+                    if self.displayTimeRangeMinPopUpButton.selectedItem != item {
+                        self.displayTimeRangeMinPopUpButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -876,7 +783,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
 //        self.displayTimeRangeMinPopUpButton!.glue.isEnabled <-- model.map{$0.displayIncludeTimeRange}
         model.map(\.displayIncludeTimeRange).switchToLatest()
             .sink { [unowned self] enabled in
-                self.displayTimeRangeMinPopUpButton?.isEnabled = enabled
+                self.displayTimeRangeMinPopUpButton.isEnabled = enabled
             }
             .store(in: &cancellables)
 
@@ -890,18 +797,18 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             rangeItem.representedObject = value
             displayTimeUpperBoundMenu.addItem(rangeItem)
         }
-        displayTimeRangeMaxPopUpButton?.menu = displayTimeUpperBoundMenu
+        displayTimeRangeMaxPopUpButton.menu = displayTimeUpperBoundMenu
         func bindDisplayTimeRangeMax() {
             model.map(\.displayTimeRange.upperBoundPublisher)
                 .switchToLatest()
                 .sink { [unowned self] value in
                     guard
-                        let menu = self.displayTimeRangeMaxPopUpButton?.menu,
+                        let menu = self.displayTimeRangeMaxPopUpButton.menu,
                         let item = menu.items.first(where: { ($0.representedObject as? Time) == value })
                         else { return }
                     
-                    if self.displayTimeRangeMaxPopUpButton?.selectedItem != item {
-                        self.displayTimeRangeMaxPopUpButton?.select(item)
+                    if self.displayTimeRangeMaxPopUpButton.selectedItem != item {
+                        self.displayTimeRangeMaxPopUpButton.select(item)
                     }
                 }
                 .store(in: &cancellables)
@@ -911,7 +818,7 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
 //        self.displayTimeRangeMaxPopUpButton!.glue.isEnabled <-- model.map{$0.displayIncludeTimeRange}
         model.map(\.displayIncludeTimeRange).switchToLatest()
             .sink { [unowned self] enabled in
-                self.displayTimeRangeMaxPopUpButton?.isEnabled = enabled
+                self.displayTimeRangeMaxPopUpButton.isEnabled = enabled
             }
             .store(in: &cancellables)
 
@@ -947,10 +854,6 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             case .count: return .count
             case .other(let band): return band
             }
-        }
-
-        static func ==(left: CurveBandValues, right: CurveBandValues) -> Bool {
-            return left.band == right.band
         }
     }
 
@@ -994,14 +897,9 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             case let (t, b): self = .other(top: t, bottom: b)
             }
         }
-
-        static func ==(left: ErrorBandValues, right: ErrorBandValues) -> Bool {
-            return left.top == right.top && left.bottom == right.bottom
-        }
-
     }
 
-    func stateDidChange(from old: State, to new: State) {
+    private func stateDidChange(from old: State, to new: State) {
         switch old {
         case .loading(let process):
             process.stop()
@@ -1015,51 +913,53 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
 
         switch new {
         case .noBenchmark:
-            self.setStatus(.immediate, "Attabench document cannot be found; can't take new measurements")
+            setStatus(.immediate, "Attabench document cannot be found; can't take new measurements")
         case .idle:
-            self.setStatus(.immediate, "Ready")
+            setStatus(.immediate, "Ready")
         case .loading(_):
-            self.setStatus(.immediate, "Loading \(name)...")
+            setStatus(.immediate, "Loading \(name)...")
         case .waiting:
-            self.setStatus(.immediate, "No executable tasks selected, pausing")
+            setStatus(.immediate, "No executable tasks selected, pausing")
         case .running(_):
-            self.setStatus(.immediate, "Starting \(name)...")
+            setStatus(.immediate, "Starting \(name)...")
         case .stopping(_, then: .restart):
-            self.setStatus(.immediate, "Restarting \(name)...")
+            setStatus(.immediate, "Restarting \(name)...")
         case .stopping(_, then: _):
-            self.setStatus(.immediate, "Stopping \(name)...")
+            setStatus(.immediate, "Stopping \(name)...")
         case .failedBenchmark:
-            self.setStatus(.immediate, "Failed")
+            setStatus(.immediate, "Failed")
         }
-        self.refreshRunButton()
+        refreshRunButton()
     }
 
     func refreshRunButton() {
+        guard runButton != nil else { return }
+        
         switch state {
         case .noBenchmark:
-            self.runButton?.isEnabled = false
-            self.runButton?.image = #imageLiteral(resourceName: "RunTemplate")
+            runButton.isEnabled = false
+            runButton.image = #imageLiteral(resourceName: "RunTemplate")
         case .idle:
-            self.runButton?.isEnabled = true
-            self.runButton?.image = #imageLiteral(resourceName: "RunTemplate")
+            runButton.isEnabled = true
+            runButton.image = #imageLiteral(resourceName: "RunTemplate")
         case .loading(_):
-            self.runButton?.isEnabled = true
-            self.runButton?.image = #imageLiteral(resourceName: "StopTemplate")
+            runButton.isEnabled = true
+            runButton.image = #imageLiteral(resourceName: "StopTemplate")
         case .waiting:
-            self.runButton?.isEnabled = true
-            self.runButton?.image = #imageLiteral(resourceName: "StopTemplate")
+            runButton.isEnabled = true
+            runButton.image = #imageLiteral(resourceName: "StopTemplate")
         case .running(_):
-            self.runButton?.isEnabled = true
-            self.runButton?.image = #imageLiteral(resourceName: "StopTemplate")
+            runButton.isEnabled = true
+            runButton.image = #imageLiteral(resourceName: "StopTemplate")
         case .stopping(_, then: .restart):
-            self.runButton?.isEnabled = true
-            self.runButton?.image = #imageLiteral(resourceName: "StopTemplate")
+            runButton.isEnabled = true
+            runButton.image = #imageLiteral(resourceName: "StopTemplate")
         case .stopping(_, then: _):
-            self.runButton?.isEnabled = false
-            self.runButton?.image = #imageLiteral(resourceName: "StopTemplate")
+            runButton.isEnabled = false
+            runButton.image = #imageLiteral(resourceName: "StopTemplate")
         case .failedBenchmark:
-            self.runButton?.image = #imageLiteral(resourceName: "RunTemplate")
-            self.runButton?.isEnabled = true
+            runButton.image = #imageLiteral(resourceName: "RunTemplate")
+            runButton.isEnabled = true
         }
     }
 }
@@ -1079,8 +979,8 @@ extension AttabenchDocument {
     }
     
     func readAttaresult(_ data: Data) throws {
-        self.model.value = try JSONDecoder().decode(Attaresult.self, from: data)
-        self.theme.value = BenchmarkTheme.Predefined.theme(named: self.model.value.themeName.value) ?? BenchmarkTheme.Predefined.screen
+        model.value = try JSONDecoder().decode(Attaresult.self, from: data)
+        theme.value = BenchmarkTheme.Predefined.theme(named: self.model.value.themeName.value) ?? BenchmarkTheme.Predefined.screen
     }
 
     override func read(from url: URL, ofType typeName: String) throws {
@@ -1090,15 +990,13 @@ extension AttabenchDocument {
             if let url = model.value.benchmarkURL.value {
                 do {
                     log(.status, "Loading \(FileManager().displayName(atPath: url.path))")
-                    self.state = .loading(try BenchmarkProcess(url: url, command: .list, delegate: self, on: .main))
-                }
-                catch {
+                    state = .loading(try BenchmarkProcess(url: url, command: .list, delegate: self, on: .main))
+                } catch {
                     log(.status, "Failed to load benchmark: \(error.localizedDescription)")
-                    self.state = .failedBenchmark
+                    state = .failedBenchmark
                 }
-            }
-            else {
-                self.state = .noBenchmark
+            } else {
+                state = .noBenchmark
             }
         case UTI.attabench:
             log(.status, "Loading \(FileManager().displayName(atPath: url.path))")
@@ -1108,13 +1006,12 @@ extension AttabenchDocument {
                 self.fileURL = nil
                 self.fileModificationDate = nil
                 self.displayName = url.deletingPathExtension().lastPathComponent
-                self.model.value = Attaresult()
-                self.model.value.benchmarkURL.value = url
-                self.state = .loading(try BenchmarkProcess(url: url, command: .list, delegate: self, on: .main))
-            }
-            catch {
+                model.value = Attaresult()
+                model.value.benchmarkURL.value = url
+                state = .loading(try BenchmarkProcess(url: url, command: .list, delegate: self, on: .main))
+            } catch {
                 log(.status, "Failed to load benchmark: \(error.localizedDescription)")
-                self.state = .failedBenchmark
+                state = .failedBenchmark
                 throw error
             }
         default:
@@ -1145,32 +1042,33 @@ extension AttabenchDocument {
             }
             textView.textStorage!.append(atext)
             textView.scrollToEndOfDocument(nil)
-        }
-        else if let pendingLog = self._log {
+        } else if let pendingLog = self._log {
             if !pendingLog.string.hasSuffix("\n") {
                 pendingLog.mutableString.append("\n")
             }
             pendingLog.append(atext)
-        }
-        else {
+        } else {
             _log = (atext.mutableCopy() as! NSMutableAttributedString)
         }
     }
 
     @IBAction func clearConsole(_ sender: Any) {
         _log = nil
-        self.consoleTextView?.textStorage?.setAttributedString(NSAttributedString())
+        consoleTextView.textStorage?.setAttributedString(NSAttributedString())
     }
 
     enum StatusUpdate {
         case immediate
         case lazy
     }
+    
     func setStatus(_ kind: StatusUpdate, _ text: String) {
+        guard statusLabel != nil else { return }
+        
         self._status = text
         switch kind {
-        case .immediate: self.statusLabel?.immediateStatus = text
-        case .lazy: self.statusLabel?.lazyStatus = text
+        case .immediate: statusLabel.immediateStatus = text
+        case .lazy: statusLabel.lazyStatus = text
         }
     }
 }
@@ -1193,9 +1091,6 @@ extension AttabenchDocument {
             task.isRunnable.value = fresh.contains(task.name)
         }
         model.value.tasks.value = tasks
-//        for task in model.value.tasks.value {
-//            task.isRunnable.value = fresh.contains(task.name)
-//        }
 
         log(.status, "Received \(model.value.tasks.value.count) task names (\(newTaskNames.count) new, \(missingTaskNames.count) missing).")
     }
@@ -1237,6 +1132,95 @@ extension AttabenchDocument {
         guard self.state.process === benchmark else { return }
         log(.status, "Process finished.")
         processDidStop(success: true)
+    }
+}
+
+// MARK: - Actions
+
+extension AttabenchDocument {
+    
+    @objc
+    private func didChangeIterationsStepper() {
+        guard let iterations = iterationsStepper.objectValue as? Int else { return }
+        model.value.iterations.value = iterations
+    }
+    
+    @objc
+    private func didChangeMinDuration() {
+        let lowerBoundString = minimumDurationField.stringValue
+        guard
+            let lowerBound = Time(lowerBoundString)
+            else { return }
+        model.value.durationRange.lowerBound = lowerBound
+    }
+    
+    @objc
+    private func didChangeMaxDuration() {
+        let upperBoundString = maximumDurationField.stringValue
+        guard
+            let upperBound = Time(upperBoundString)
+            else { return }
+        model.value.durationRange.upperBound = upperBound
+    }
+    
+    @objc
+    private func didChangeAmortizedCheckbox() {
+        model.value.amortizedTime.value = amortizedCheckbox.state == .on
+    }
+    
+    @objc
+    private func didChangeLogarithmicSizeCheckbox() {
+        model.value.logarithmicSizeScale.value = logarithmicSizeCheckbox.state == .on
+    }
+    
+    @objc
+    private func didChangeLogarithmicTimeCheckbox() {
+        model.value.logarithmicTimeScale.value = logarithmicTimeCheckbox.state == .on
+    }
+    
+    @objc
+    private func didChangeProgressRefreshInterval() {
+        let intervalString = progressRefreshIntervalField.stringValue
+        guard
+            let intervalTime = Time(intervalString)
+            else { return }
+        
+        model.value.progressRefreshInterval.value = intervalTime
+    }
+    
+    @objc
+    private func didChangeChartRefreshInterval() {
+        let intervalString = chartRefreshIntervalField.stringValue
+        guard
+            let intervalTime = Time(intervalString)
+            else { return }
+        
+        model.value.chartRefreshInterval.value = intervalTime
+    }
+    
+    @objc
+    private func didChangeHighlightSelectedSizeRangeCheckbox() {
+        model.value.highlightSelectedSizeRange.value = highlightSelectedSizeRangeCheckbox.state == .on
+    }
+    
+    @objc
+    private func didChangeDisplayIncludeAllMeasuredSizesCheckbox() {
+        model.value.displayIncludeAllMeasuredSizes.value = displayIncludeAllMeasuredSizesCheckbox.state == .on
+    }
+    
+    @objc
+    private func didChangeDisplayIncludeSizeScaleRangeCheckbox() {
+        model.value.displayIncludeSizeScaleRange.value = displayIncludeSizeScaleRangeCheckbox.state == .on
+    }
+    
+    @objc
+    private func didChangeDisplayIncludeAllMeasuredTimesCheckbox() {
+        model.value.displayIncludeAllMeasuredTimes.value = displayIncludeAllMeasuredTimesCheckbox.state == .on
+    }
+    
+    @objc
+    private func didChangeDisplayIncludeTimeRangeCheckbox() {
+        model.value.displayIncludeTimeRange.value = displayIncludeTimeRangeCheckbox.state == .on
     }
 }
 
@@ -1326,18 +1310,18 @@ extension AttabenchDocument {
             self.activity = nil
         }
         refreshChart.nowIfNeeded()
-        switch self.state {
+        switch state {
         case .loading(_):
-            self.state = success ? .idle : .failedBenchmark
+            state = success ? .idle : .failedBenchmark
         case .stopping(_, then: .idle):
-            self.state = .idle
+            state = .idle
         case .stopping(_, then: .restart):
-            self.state = .idle
+            state = .idle
             startMeasuring()
         case .stopping(_, then: .reload):
             _reload()
         default:
-            self.state = .idle
+            state = .idle
         }
     }
 
@@ -1376,7 +1360,7 @@ extension AttabenchDocument {
                 return false
             }
         case #selector(AttabenchDocument.delete(_:)):
-            return self.tasksTableView?.selectedRowIndexes.isEmpty == false
+            return self.tasksTableView.selectedRowIndexes.isEmpty == false
         default:
             return super.validateMenuItem(menuItem)
         }
@@ -1384,7 +1368,7 @@ extension AttabenchDocument {
     
     @IBAction func delete(_ sender: AnyObject) {
         // FIXME this is horrible. Implement Undo etc.
-        let tasks = (self.tasksTableView?.selectedRowIndexes ?? []).map { self.visibleTasks.value[$0] }
+        let tasks = tasksTableView.selectedRowIndexes.map { visibleTasks.value[$0] }
         
         let selectedSizeRange = model.value.selectedSizeRange.value
         for task in tasks {
@@ -1403,8 +1387,8 @@ extension AttabenchDocument {
 //                }
 //            }
 //        }
-        self.refreshChart.now()
-        self.updateChangeCount(.changeDone)
+        refreshChart.now()
+        updateChangeCount(.changeDone)
     }
 
     @IBAction func chooseBenchmark(_ sender: AnyObject) {
@@ -1427,11 +1411,11 @@ extension AttabenchDocument {
         do {
             guard let url = model.value.benchmarkURL.value else { chooseBenchmark(self); return }
             log(.status, "Loading \(FileManager().displayName(atPath: url.path))")
-            self.state = .loading(try BenchmarkProcess(url: url, command: .list, delegate: self, on: .main))
+            state = .loading(try BenchmarkProcess(url: url, command: .list, delegate: self, on: .main))
         }
         catch {
             log(.status, "Failed to load benchmark: \(error.localizedDescription)")
-            self.state = .failedBenchmark
+            state = .failedBenchmark
         }
     }
 
@@ -1442,13 +1426,13 @@ extension AttabenchDocument {
         case .idle, .failedBenchmark, .waiting:
             _reload()
         case .running(let process):
-            self.state = .stopping(process, then: .reload)
+            state = .stopping(process, then: .reload)
             process.stop()
         case .loading(let process):
-            self.state = .stopping(process, then: .reload)
+            state = .stopping(process, then: .reload)
             process.stop()
         case .stopping(let process, then: _):
-            self.state = .stopping(process, then: .reload)
+            state = .stopping(process, then: .reload)
         }
     }
 
@@ -1458,39 +1442,40 @@ extension AttabenchDocument {
             NSSound.beep()
         case .idle:
             guard !model.value.tasks.value.isEmpty else { return }
-            self.startMeasuring()
+            startMeasuring()
         case .waiting:
-            self.state = .idle
+            state = .idle
         case .running(_):
             stopMeasuring()
         case .loading(let process):
-            self.state = .failedBenchmark
+            state = .failedBenchmark
             process.stop()
         case .stopping(let process, then: .restart):
-            self.state = .stopping(process, then: .idle)
+            state = .stopping(process, then: .idle)
         case .stopping(let process, then: .reload):
-            self.state = .stopping(process, then: .idle)
+            state = .stopping(process, then: .idle)
         case .stopping(let process, then: .idle):
-            self.state = .stopping(process, then: .restart)
+            state = .stopping(process, then: .restart)
         }
     }
 
     func stopMeasuring() {
         guard case .running(let process) = state else { return }
-        self.state = .stopping(process, then: .idle)
+        state = .stopping(process, then: .idle)
         process.stop()
     }
 
     func startMeasuring() {
-        guard let source = self.model.value.benchmarkURL.value else { log(.status, "Can't start measuring"); return }
-        switch self.state {
+        guard let source = model.value.benchmarkURL.value else { log(.status, "Can't start measuring"); return }
+        switch state {
         case .waiting, .idle: break
         default: return
         }
+        
         let tasks = tasksToRun.value.map { $0.name }
-        let sizes = self.model.value.selectedSizes.value.sorted()
+        let sizes = model.value.selectedSizes.value.sorted()
         guard !tasks.isEmpty, !sizes.isEmpty else {
-            self.state = .waiting
+            state = .waiting
             return
         }
 
@@ -1501,23 +1486,22 @@ extension AttabenchDocument {
                                  minimumDuration: model.value.durationRange.value.lowerBound.seconds,
                                  maximumDuration: model.value.durationRange.value.upperBound.seconds)
         do {
-            self.state = .running(try BenchmarkProcess(url: source, command: .run(options), delegate: self, on: .main))
-            self.activity = ProcessInfo.processInfo.beginActivity(
+            state = .running(try BenchmarkProcess(url: source, command: .run(options), delegate: self, on: .main))
+            activity = ProcessInfo.processInfo.beginActivity(
                 options: [.idleSystemSleepDisabled, .automaticTerminationDisabled, .suddenTerminationDisabled],
                 reason: "Benchmarking")
-        }
-        catch {
-            self.log(.status, error.localizedDescription)
-            self.state = .idle
+        } catch {
+            log(.status, error.localizedDescription)
+            state = .idle
         }
     }
 
     func runOptionsDidChange() {
-        switch self.state {
+        switch state {
         case .waiting:
             startMeasuring()
         case .running(let process):
-            self.state = .stopping(process, then: .restart)
+            state = .stopping(process, then: .restart)
         default:
             break
         }
@@ -1527,7 +1511,6 @@ extension AttabenchDocument {
 //MARK: Size selection
 
 extension AttabenchDocument {
-
     @IBAction func increaseMinScale(_ sender: AnyObject) {
         model.value.sizeScaleRange.lowerBound += 1
     }
@@ -1587,65 +1570,51 @@ extension AttabenchDocument {
 }
 
 extension AttabenchDocument: NSSplitViewDelegate {
+
     @IBAction func showHideLeftPane(_ sender: Any) {
-        guard let pane = self.leftPane else { return }
-        pane.isHidden = !pane.isHidden
+        leftPane.isHidden.toggle()
     }
 
     @IBAction func showHideRightPane(_ sender: Any) {
-        guard let pane = self.rightPane else { return }
-        pane.isHidden = !pane.isHidden
+        rightPane.isHidden.toggle()
     }
 
     @IBAction func showHideRunOptions(_ sender: NSButton) {
-        guard let pane = self.runOptionsPane else { return }
-        pane.isHidden = !pane.isHidden
+        runOptionsPane.isHidden.toggle()
     }
+    
     @IBAction func showHideConsole(_ sender: NSButton) {
-        guard let pane = self.consolePane else { return }
-        pane.isHidden = !pane.isHidden
+        consolePane.isHidden.toggle()
     }
 
     func splitView(_ splitView: NSSplitView, canCollapseSubview subview: NSView) -> Bool {
-        if subview === self.leftPane { return true }
-        if subview === self.rightPane { return true }
-        if subview === self.runOptionsPane { return true }
-        if subview === self.consolePane { return true }
+        if subview === leftPane { return true }
+        if subview === rightPane { return true }
+        if subview === runOptionsPane { return true }
+        if subview === consolePane { return true }
         return false
     }
 
     func splitViewDidResizeSubviews(_ notification: Notification) {
         guard let splitView = notification.object as? NSSplitView else { return }
-        if splitView === rootSplitView {
-            let state: NSControl.StateValue = splitView.isSubviewCollapsed(self.leftPane!) ? .off : .on
-            if showLeftPaneButton!.state != state {
-                showLeftPaneButton!.state = state
-            }
-        }
-        if splitView === rootSplitView {
-            let state: NSControl.StateValue = splitView.isSubviewCollapsed(self.rightPane!) ? .off : .on
-            if showRightPaneButton!.state != state {
-                showRightPaneButton!.state = state
-            }
-        }
-        else if splitView === leftVerticalSplitView {
-            let state: NSControl.StateValue = splitView.isSubviewCollapsed(self.runOptionsPane!) ? .off : .on
-            if showRunOptionsButton!.state != state {
-                showRunOptionsButton!.state = state
-            }
-        }
-        else if splitView === middleSplitView {
-            let state: NSControl.StateValue = splitView.isSubviewCollapsed(self.consolePane!) ? .off : .on
-            if showConsoleButton!.state != state {
-                showConsoleButton!.state = state
-            }
+        
+        switch splitView {
+        case rootSplitView:
+            showLeftPaneButton.state = splitView.isSubviewCollapsed(leftPane) ? .off : .on
+            showRightPaneButton.state = splitView.isSubviewCollapsed(rightPane) ? .off : .on
+        case leftVerticalSplitView:
+            showRunOptionsButton.state = splitView.isSubviewCollapsed(runOptionsPane) ? .off : .on
+        case middleSplitView:
+            showConsoleButton.state = splitView.isSubviewCollapsed(consolePane) ? .off : .on
+        default:
+            fatalError("Unknown slplit view")
         }
     }
     
     func splitView(_ splitView: NSSplitView, additionalEffectiveRectOfDividerAt dividerIndex: Int) -> NSRect {
         if splitView === middleSplitView, dividerIndex == 1 {
-            let status = splitView.convert(self.statusLabel!.bounds, from: self.statusLabel!)
-            let bar = splitView.convert(self.middleBar!.bounds, from: self.middleBar!)
+            let status = splitView.convert(statusLabel.bounds, from: statusLabel)
+            let bar = splitView.convert(middleBar.bounds, from: middleBar)
             return CGRect(x: status.minX, y: bar.minY, width: status.width, height: bar.height)
         }
         return .zero
@@ -1655,19 +1624,19 @@ extension AttabenchDocument: NSSplitViewDelegate {
 
 extension AttabenchDocument {
     @IBAction func batchCheckboxAction(_ sender: NSButton) {
-        let v = (sender.state != .off)
-        self.visibleTasks.value.forEach { $0.checked.value = v }
+        let isChecked = sender.state != .off
+        visibleTasks.value.forEach { $0.checked.value = isChecked }
     }
 }
 
 extension AttabenchDocument: NSTextFieldDelegate {
     
     func controlTextDidChange(_ obj: Notification) {
-        guard obj.object as AnyObject === self.taskFilterTextField else {
+        guard obj.object as AnyObject === taskFilterTextField else {
             return
         }
-        let v = self.taskFilterTextField!.stringValue
-        self.taskFilterString.value = v.isEmpty ? nil : v
+        let filterValue = taskFilterTextField.stringValue
+        taskFilterString.value = filterValue.isEmpty ? nil : filterValue
     }
 }
 
@@ -1679,11 +1648,11 @@ extension AttabenchDocument {
 
     override func encodeRestorableState(with coder: NSCoder) {
         super.encodeRestorableState(with: coder)
-        coder.encode(self.taskFilterString.value, forKey: RestorationKey.taskFilterString.rawValue)
+        coder.encode(taskFilterString.value, forKey: RestorationKey.taskFilterString.rawValue)
     }
 
     override func restoreState(with coder: NSCoder) {
         super.restoreState(with: coder)
-        self.taskFilterString.value = coder.decodeObject(forKey: RestorationKey.taskFilterString.rawValue) as? String
+        taskFilterString.value = coder.decodeObject(forKey: RestorationKey.taskFilterString.rawValue) as? String
     }
 }
