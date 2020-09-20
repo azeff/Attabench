@@ -9,5 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Select Xcode
+      run: sudo xcode-select -switch /Applications/Xcode_12.app
     - name: Build
       run: xcrun xcodebuild -project Attabench.xcodeproj -scheme Attabench

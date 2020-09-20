@@ -78,7 +78,7 @@ public class Attaresult: Codable {
     public let chartRefreshInterval = CurrentValueSubject<Time, Never>(0.5)
 
     public private(set) lazy var chartOptionsTick: AnyPublisher<Void, Never> = {
-        return Publishers.MergeMany([
+        let publishers: [AnyPublisher<Void, Never>] = [
             amortizedTime.map({ _ in Void() }).eraseToAnyPublisher(),
             logarithmicSizeScale.map({ _ in Void() }).eraseToAnyPublisher(),
             logarithmicTimeScale.map({ _ in Void() }).eraseToAnyPublisher(),
@@ -96,7 +96,9 @@ public class Attaresult: Codable {
             themeName.map({ _ in Void() }).eraseToAnyPublisher(),
             progressRefreshInterval.map({ _ in Void() }).eraseToAnyPublisher(),
             chartRefreshInterval.map({ _ in Void() }).eraseToAnyPublisher()
-        ]).eraseToAnyPublisher()
+        ]
+        
+        return Publishers.MergeMany(publishers).eraseToAnyPublisher()
     }()
 
     private var cancellables = Set<AnyCancellable>()
