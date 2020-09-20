@@ -15,13 +15,20 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/azeff/Benchmarking", .branch("master")),
         .package(url: "https://github.com/attaswift/BigInt", from: "5.0.0"),
-        .package(url: "https://github.com/attaswift/OptionParser", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "0.3.1"),
     ],
     targets: [
         .target(name: "BenchmarkModel", dependencies: ["BigInt"], path: "BenchmarkModel"),
         .target(name: "BenchmarkRunner", dependencies: ["Benchmarking", "BenchmarkModel"], path: "BenchmarkRunner"),
         .target(name: "BenchmarkCharts", dependencies: ["BenchmarkModel"], path: "BenchmarkCharts"),
-        .target(name: "attachart", dependencies: ["BenchmarkModel", "BenchmarkCharts", "OptionParser"], path: "attachart"),
+        .target(
+            name: "attachart",
+            dependencies: [
+                "BenchmarkModel",
+                "BenchmarkCharts",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ],
+            path: "attachart"),
     ],
     swiftLanguageVersions: [.v5]
 )
