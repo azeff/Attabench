@@ -77,7 +77,7 @@ public struct BenchmarkTheme: Equatable {
         branding?.fontName = name
     }
 
-    public mutating func setMonoFontName(_ name: String) {
+    public mutating func setLegendFontName(_ name: String) {
         legend.fontName = name
     }
 

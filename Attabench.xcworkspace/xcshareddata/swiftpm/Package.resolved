@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/azeff/Benchmarking.git",
         "state": {
           "branch": "master",
-          "revision": "69aef23644d1eff299f1c2a070cce774aa244b22",
+          "revision": "556b1371350df333b9caa648fa80e2bb3e7cff4d",
           "version": null
         }
       },
@@ -17,15 +17,6 @@
           "branch": null,
           "revision": "e1f28276687d7661cbb2754771bd9fc281784e32",
           "version": "5.2.0"
-        }
-      },
-      {
-        "package": "OptionParser",
-        "repositoryURL": "https://github.com/attaswift/OptionParser",
-        "state": {
-          "branch": null,
-          "revision": "049f1e2b9d4550c25d99c54e17a045149e723afb",
-          "version": "1.0.0"
         }
       },
       {

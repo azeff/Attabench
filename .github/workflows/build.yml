@@ -11,5 +11,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Select Xcode
       run: sudo xcode-select -switch /Applications/Xcode_12.app
-    - name: Build
+    - name: Build Attabench
       run: xcrun xcodebuild -project Attabench.xcodeproj -scheme Attabench
+    - name: Build attachart
+      run: swift build -c release
+    - name: Build SampleBenchmark example
+      run: cd ExampleBenchmarks/SampleBenchmark.attabench && swift build -c release
+    - name: Build OptimizingCollections example
+      run: cd ExampleBenchmarks/OptimizingCollections.attabench && swift build -c release

@@ -6,17 +6,17 @@
         "repositoryURL": "https://github.com/azeff/Benchmarking",
         "state": {
           "branch": "master",
-          "revision": "5fb2680a1a3d6197f5dbba29d9d57c2c1c56799e",
+          "revision": "556b1371350df333b9caa648fa80e2bb3e7cff4d",
           "version": null
         }
       },
       {
-        "package": "OptionParser",
-        "repositoryURL": "https://github.com/attaswift/OptionParser",
+        "package": "swift-argument-parser",
+        "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "049f1e2b9d4550c25d99c54e17a045149e723afb",
-          "version": "1.0.0"
+          "revision": "92646c0cdbaca076c8d3d0207891785b3379cbff",
+          "version": "0.3.1"
         }
       }
     ]
