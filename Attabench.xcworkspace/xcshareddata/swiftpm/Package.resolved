@@ -5,9 +5,9 @@
         "package": "Benchmarking",
         "repositoryURL": "https://github.com/azeff/Benchmarking.git",
         "state": {
-          "branch": "master",
+          "branch": null,
           "revision": "556b1371350df333b9caa648fa80e2bb3e7cff4d",
-          "version": null
+          "version": "1.0.1"
         }
       },
       {

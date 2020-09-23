@@ -2251,8 +2251,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/azeff/Benchmarking.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.1;
 			};
 		};
 		F6D815362400651D0024C899 /* XCRemoteSwiftPackageReference "BigInt" */ = {

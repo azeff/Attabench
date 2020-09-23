@@ -295,6 +295,7 @@ public struct BenchmarkRenderer {
         let frame: CGRect
         let contents: [Caption]
     }
+    
     func legendLayout() -> LegendLayout? {
         guard options.legendPosition != .hidden else { return nil }
 
