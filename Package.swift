@@ -13,7 +13,7 @@ let package = Package(
         .executable(name: "attachart", targets: ["attachart"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/azeff/Benchmarking", .branch("master")),
+        .package(url: "https://github.com/azeff/Benchmarking", from: "1.0.1"),
         .package(url: "https://github.com/attaswift/BigInt", from: "5.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "0.3.1"),
     ],
