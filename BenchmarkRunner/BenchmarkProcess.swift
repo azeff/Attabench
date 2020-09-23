@@ -18,8 +18,8 @@ public protocol BenchmarkDelegate {
 }
 
 extension BenchmarkDelegate {
-    public func benchmark(_ benchmark: BenchmarkProcess, didSendListOfTasks tasks: [String]) {}
-    public func benchmark(_ benchmark: BenchmarkProcess, didFailWithError error: String) {}
+//    public func benchmark(_ benchmark: BenchmarkProcess, didSendListOfTasks tasks: [String]) {}
+//    public func benchmark(_ benchmark: BenchmarkProcess, didFailWithError error: String) {}
 }
 
 public class BenchmarkProcess {

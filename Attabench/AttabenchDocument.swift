@@ -395,6 +395,17 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
         Binding.bind(displayIncludeSizeScaleRangeCheckbox, with: model.displayIncludeSizeScaleRange)
             .store(in: &modelCancellables)
 
+        model.displayIncludeSizeScaleRange
+            .sink { [unowned self] enabled in
+                self.displaySizeScaleRangeMinPopUpButton.isEnabled = enabled
+            }
+            .store(in: &modelCancellables)
+        model.displayIncludeSizeScaleRange
+            .sink { [unowned self] enabled in
+                self.displaySizeScaleRangeMaxPopUpButton.isEnabled = enabled
+            }
+            .store(in: &modelCancellables)
+
         MenuBinding.bind(
             button: displaySizeScaleRangeMinPopUpButton,
             stream: model.displaySizeScaleRange.lowerBoundPublisher,
@@ -404,12 +415,6 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             }
         ).store(in: &modelCancellables)
         
-        model.displayIncludeSizeScaleRange
-            .sink { [unowned self] enabled in
-                self.displaySizeScaleRangeMinPopUpButton.isEnabled = enabled
-            }
-            .store(in: &modelCancellables)
-
         MenuBinding.bind(
             button: displaySizeScaleRangeMaxPopUpButton,
             stream: model.displaySizeScaleRange.upperBoundPublisher,
@@ -419,12 +424,6 @@ class AttabenchDocument: NSDocument, BenchmarkDelegate {
             }
         ).store(in: &modelCancellables)
 
-        model.displayIncludeSizeScaleRange
-            .sink { [unowned self] enabled in
-                self.displaySizeScaleRangeMaxPopUpButton.isEnabled = enabled
-            }
-            .store(in: &modelCancellables)
-        
         Binding.bind(displayIncludeAllMeasuredTimesCheckbox, with: model.displayIncludeAllMeasuredTimes)
             .store(in: &modelCancellables)
 
@@ -764,17 +763,17 @@ extension AttabenchDocument {
 
     func benchmark(_ benchmark: BenchmarkProcess, didReceiveListOfTasks taskNames: [String]) {
         guard case .loading(let process) = state, process === benchmark else { benchmark.stop(); return }
-        let fresh = Set(taskNames)
         let stale = Set(model.tasks.value.map { $0.name })
-        let newTaskNames = fresh.subtracting(stale)
-        let missingTaskNames = stale.subtracting(fresh)
+        let newTaskNames = taskNames.filter { !stale.contains($0) }
+        let missingTaskNames = stale.subtracting(taskNames)
 
         let newTasks = newTaskNames.map(Task.init)
         model.tasks.value.append(contentsOf:newTasks)
         
+        let newTaskNamesSet = Set(newTaskNames)
         let tasks = model.tasks.value
         for task in tasks {
-            task.isRunnable.value = fresh.contains(task.name)
+            task.isRunnable.value = newTaskNamesSet.contains(task.name)
         }
         model.tasks.value = tasks
 
