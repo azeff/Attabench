@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "BenchmarkModel", targets: ["BenchmarkModel"]),
         .library(name: "BenchmarkRunner", targets: ["BenchmarkRunner"]),
         .library(name: "BenchmarkCharts", targets: ["BenchmarkCharts"]),
-        .executable(name: "attachart", targets: ["attachart"]),
+        .executable(name: "attabench", targets: ["attabench-cli"]),
     ],
     dependencies: [
         .package(url: "https://github.com/azeff/Benchmarking", from: "1.0.1"),
@@ -22,13 +22,13 @@ let package = Package(
         .target(name: "BenchmarkRunner", dependencies: ["Benchmarking", "BenchmarkModel"], path: "BenchmarkRunner"),
         .target(name: "BenchmarkCharts", dependencies: ["BenchmarkModel"], path: "BenchmarkCharts"),
         .target(
-            name: "attachart",
+            name: "attabench-cli",
             dependencies: [
                 "BenchmarkModel",
                 "BenchmarkCharts",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
-            path: "attachart"),
+            path: "attabench-cli"),
     ],
     swiftLanguageVersions: [.v5]
 )
