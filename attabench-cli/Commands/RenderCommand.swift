@@ -20,7 +20,8 @@ struct RenderCommand: ParsableCommand {
     )
     var benchmarkResultFilePath: String
     
-    @Argument(
+    @Option(
+        name: [.customShort("o"), .customLong("output")],
         help: .init("Path to output file (PNG or PDF).", valueName: "output"),
         completion: .file(extensions: ["png, pdf"])
     )
@@ -77,7 +78,7 @@ struct RenderCommand: ParsableCommand {
             valueName: "band"
         )
     )
-    var topBand: Options.Band = .sigma2
+    var topBand: RenderOptions.Band = .sigma2
     
     @Option(
         help: .init(
@@ -85,7 +86,7 @@ struct RenderCommand: ParsableCommand {
             valueName: "band"
         )
     )
-    var centerBand: Options.Band = .average
+    var centerBand: RenderOptions.Band = .average
 
     @Option(
         help: .init(
@@ -93,12 +94,12 @@ struct RenderCommand: ParsableCommand {
             valueName: "band"
         )
     )
-    var bottomBand: Options.Band = .minimum
+    var bottomBand: RenderOptions.Band = .minimum
 
     @Option(
         help: "Generate chart with thise theme."
     )
-    var theme: Options.Theme = .screen
+    var theme: RenderOptions.Theme = .screen
 
     @Option(
         help: "Width of generated image, in points."
@@ -181,7 +182,7 @@ struct RenderCommand: ParsableCommand {
 }
 
 extension RenderCommand {
-    var options: Options {
+    var options: RenderOptions {
         let inputSize: (min: Int, max: Int)?
         if let minSize = minSize, let maxSize = maxSize {
             inputSize = (min: minSize, max: maxSize)
@@ -212,7 +213,7 @@ extension RenderCommand {
             title = self.title
         }
 
-        return Options(
+        return RenderOptions(
             tasks: tasks,
             inputSize: inputSize,
             time: time,

@@ -6,7 +6,7 @@ import BenchmarkModel
 import BenchmarkCharts
 import ArgumentParser
 
-struct Options {
+struct RenderOptions {
     
     enum Band: String, ExpressibleByArgument {
         case off = "none"

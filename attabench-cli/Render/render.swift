@@ -7,13 +7,13 @@ import BenchmarkCharts
 import BenchmarkModel
 import Foundation
 
-func render(_ inputURL: URL, to outputURL: URL, with options: Options) throws {
+func render(_ inputURL: URL, to outputURL: URL, with options: RenderOptions) throws {
     let data = try Data(contentsOf: inputURL)
     let model = try JSONDecoder().decode(Attaresult.self, from: data)
     try render(model: model, to: outputURL, with: options)
 }
 
-private func render(model: Attaresult, to outputURL: URL, with options: Options) throws {
+private func render(model: Attaresult, to outputURL: URL, with options: RenderOptions) throws {
     let tasks: [Task]
     if options.tasks.isEmpty {
         tasks = model.tasks.value
@@ -63,7 +63,7 @@ private func render(model: Attaresult, to outputURL: URL, with options: Options)
     }
 }
 
-extension Options {
+extension RenderOptions {
     var asChartOptions: BenchmarkChart.Options {
         var chartOptions = BenchmarkChart.Options()
         chartOptions.amortizedTime = amortized
@@ -89,7 +89,7 @@ extension Options {
     }
 }
 
-private func getTheme(for options: Options) throws -> BenchmarkTheme {
+private func getTheme(for options: RenderOptions) throws -> BenchmarkTheme {
     let themeName = options.theme.name
     guard var theme = BenchmarkTheme.Predefined.theme(named: themeName) else {
         throw ValidationError("Unknown theme '\(themeName); use -list-themes to get a list of available themes")
@@ -107,7 +107,7 @@ private func getTheme(for options: Options) throws -> BenchmarkTheme {
     return theme
 }
 
-extension Options.Theme {
+extension RenderOptions.Theme {
     var name: String {
         switch self {
         case .screen: return "Screen"
@@ -118,7 +118,7 @@ extension Options.Theme {
     }
 }
 
-extension Options.Band {
+extension RenderOptions.Band {
     var value: TimeSample.Band? {
         switch self {
         case .off: return nil

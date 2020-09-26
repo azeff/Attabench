@@ -17,11 +17,6 @@ public protocol BenchmarkDelegate {
     func benchmarkDidStop(_ benchmark: BenchmarkProcess)
 }
 
-extension BenchmarkDelegate {
-//    public func benchmark(_ benchmark: BenchmarkProcess, didSendListOfTasks tasks: [String]) {}
-//    public func benchmark(_ benchmark: BenchmarkProcess, didFailWithError error: String) {}
-}
-
 public class BenchmarkProcess {
     private struct Delegate: CommandLineDelegate {
         unowned let benchmark: BenchmarkProcess
