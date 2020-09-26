@@ -51,26 +51,26 @@
 		BBCC9FB41F5AEEB400AE36DE /* BenchmarkChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8E0E091E3262C600505773 /* BenchmarkChart.swift */; };
 		BBCC9FB61F5AFA6A00AE36DE /* CombineTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC9FB51F5AFA6A00AE36DE /* CombineTableViewController.swift */; };
 		BBCC9FBC1F5B00F400AE36DE /* TaskCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBCC9FBB1F5B00F400AE36DE /* TaskCellView.swift */; };
-		F603B2B92439F7770050A973 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = F603B2B82439F7770050A973 /* ArgumentParser */; };
-		F68A764B24177BA3000A6D55 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB23CE811F61B476006FC3B3 /* main.swift */; };
-		F68A764C24177BA3000A6D55 /* Options.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB55F5771F61CF1E00E9FF6D /* Options.swift */; };
-		F68A765324177BB4000A6D55 /* BenchmarkCharts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26DA1F59B82C00C6FB74 /* BenchmarkCharts.framework */; };
-		F68A765424177BB4000A6D55 /* BenchmarkCharts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26DA1F59B82C00C6FB74 /* BenchmarkCharts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		F68A765724177BB4000A6D55 /* BenchmarkModel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26ED1F59B88E00C6FB74 /* BenchmarkModel.framework */; };
-		F68A765824177BB4000A6D55 /* BenchmarkModel.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26ED1F59B88E00C6FB74 /* BenchmarkModel.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F6ABC88124034425002799E9 /* ClosedRange+Union.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC88024034425002799E9 /* ClosedRange+Union.swift */; };
 		F6ABC89F240439FA002799E9 /* UTI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC89E240439FA002799E9 /* UTI.swift */; };
 		F6ABC8A324046240002799E9 /* TaskFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC8A224046240002799E9 /* TaskFilter.swift */; };
 		F6ABC8A6240462C5002799E9 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6ABC8A5240462C5002799E9 /* Binding.swift */; };
 		F6ACE9572402A74A005A20FE /* Benchmarking in Frameworks */ = {isa = PBXBuildFile; productRef = F6ACE9562402A74A005A20FE /* Benchmarking */; };
 		F6ACE9592402A758005A20FE /* Benchmarking in Frameworks */ = {isa = PBXBuildFile; productRef = F6ACE9582402A758005A20FE /* Benchmarking */; };
+		F6BB0000251E448F001A5524 /* render.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731C32517F5370046AEF0 /* render.swift */; };
+		F6BB000A251E44B9001A5524 /* ListTasksCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731A62517EABC0046AEF0 /* ListTasksCommand.swift */; };
+		F6BB000B251E44B9001A5524 /* MainCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731BB2517EC700046AEF0 /* MainCommand.swift */; };
+		F6BB000C251E44B9001A5524 /* ListThemesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731AE2517EBEF0046AEF0 /* ListThemesCommand.swift */; };
+		F6BB000D251E44B9001A5524 /* RenderCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731B32517EC470046AEF0 /* RenderCommand.swift */; };
+		F6BBFFF0251E4437001A5524 /* BenchmarkCharts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26DA1F59B82C00C6FB74 /* BenchmarkCharts.framework */; };
+		F6BBFFF1251E4437001A5524 /* BenchmarkCharts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26DA1F59B82C00C6FB74 /* BenchmarkCharts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F6BBFFF4251E4437001A5524 /* BenchmarkModel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26ED1F59B88E00C6FB74 /* BenchmarkModel.framework */; };
+		F6BBFFF5251E4437001A5524 /* BenchmarkModel.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA26ED1F59B88E00C6FB74 /* BenchmarkModel.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F6BBFFFA251E443C001A5524 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = F6BBFFF9251E443C001A5524 /* ArgumentParser */; };
+		F6BBFFFE251E448F001A5524 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB23CE811F61B476006FC3B3 /* main.swift */; };
+		F6BBFFFF251E448F001A5524 /* RenderOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB55F5771F61CF1E00E9FF6D /* RenderOptions.swift */; };
 		F6D815382400651D0024C899 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = F6D815372400651D0024C899 /* BigInt */; };
 		F6D8153A240065F30024C899 /* BigInt in Frameworks */ = {isa = PBXBuildFile; productRef = F6D81539240065F30024C899 /* BigInt */; };
-		F6F731A72517EABC0046AEF0 /* ListTasksCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731A62517EABC0046AEF0 /* ListTasksCommand.swift */; };
-		F6F731AF2517EBEF0046AEF0 /* ListThemesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731AE2517EBEF0046AEF0 /* ListThemesCommand.swift */; };
-		F6F731B42517EC470046AEF0 /* RenderCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731B32517EC470046AEF0 /* RenderCommand.swift */; };
-		F6F731BC2517EC700046AEF0 /* MainCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731BB2517EC700046AEF0 /* MainCommand.swift */; };
-		F6F731C42517F5370046AEF0 /* render.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F731C32517F5370046AEF0 /* render.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,14 +95,14 @@
 			remoteGlobalIDString = BBCA26EC1F59B88E00C6FB74;
 			remoteInfo = BenchmarkResults;
 		};
-		F68A765524177BB4000A6D55 /* PBXContainerItemProxy */ = {
+		F6BBFFF2251E4437001A5524 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BB1DA9C51E2E5923000F2B03 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BBCA26D91F59B82C00C6FB74;
 			remoteInfo = BenchmarkCharts;
 		};
-		F68A765924177BB4000A6D55 /* PBXContainerItemProxy */ = {
+		F6BBFFF6251E4437001A5524 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BB1DA9C51E2E5923000F2B03 /* Project object */;
 			proxyType = 1;
@@ -135,7 +135,7 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F68A763F24177B46000A6D55 /* CopyFiles */ = {
+		F6BBFFE1251E436A001A5524 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -144,14 +144,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
-		F68A765F24177BB4000A6D55 /* Embed Frameworks */ = {
+		F6BBFFF8251E4437001A5524 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F68A765824177BB4000A6D55 /* BenchmarkModel.framework in Embed Frameworks */,
-				F68A765424177BB4000A6D55 /* BenchmarkCharts.framework in Embed Frameworks */,
+				F6BBFFF5251E4437001A5524 /* BenchmarkModel.framework in Embed Frameworks */,
+				F6BBFFF1251E4437001A5524 /* BenchmarkCharts.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -167,7 +167,7 @@
 		BB40F81C1F5C2D6600C5EB75 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		BB4F155E1F409882003C05C3 /* BenchmarkRunner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BenchmarkRunner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB4F15611F409882003C05C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BB55F5771F61CF1E00E9FF6D /* Options.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Options.swift; sourceTree = "<group>"; };
+		BB55F5771F61CF1E00E9FF6D /* RenderOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderOptions.swift; sourceTree = "<group>"; };
 		BB5B02D81F5E2A4C0084D86B /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		BB65B0F31F59BBA4007EB717 /* Attabench.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Attabench.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB65B0F51F59BBA5007EB717 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -210,11 +210,11 @@
 		BBCC9FB01F5AE11100AE36DE /* ColoredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColoredView.swift; sourceTree = "<group>"; };
 		BBCC9FB51F5AFA6A00AE36DE /* CombineTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineTableViewController.swift; sourceTree = "<group>"; };
 		BBCC9FBB1F5B00F400AE36DE /* TaskCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCellView.swift; sourceTree = "<group>"; };
-		F68A764124177B46000A6D55 /* attachart */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = attachart; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6ABC88024034425002799E9 /* ClosedRange+Union.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClosedRange+Union.swift"; sourceTree = "<group>"; };
 		F6ABC89E240439FA002799E9 /* UTI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTI.swift; sourceTree = "<group>"; };
 		F6ABC8A224046240002799E9 /* TaskFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFilter.swift; sourceTree = "<group>"; };
 		F6ABC8A5240462C5002799E9 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
+		F6BBFFE3251E436A001A5524 /* attabench */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = attabench; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6F731A62517EABC0046AEF0 /* ListTasksCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTasksCommand.swift; sourceTree = "<group>"; };
 		F6F731AE2517EBEF0046AEF0 /* ListThemesCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListThemesCommand.swift; sourceTree = "<group>"; };
 		F6F731B32517EC470046AEF0 /* RenderCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderCommand.swift; sourceTree = "<group>"; };
@@ -261,13 +261,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F68A763E24177B46000A6D55 /* Frameworks */ = {
+		F6BBFFE0251E436A001A5524 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F68A765324177BB4000A6D55 /* BenchmarkCharts.framework in Frameworks */,
-				F603B2B92439F7770050A973 /* ArgumentParser in Frameworks */,
-				F68A765724177BB4000A6D55 /* BenchmarkModel.framework in Frameworks */,
+				F6BBFFFA251E443C001A5524 /* ArgumentParser in Frameworks */,
+				F6BBFFF4251E4437001A5524 /* BenchmarkModel.framework in Frameworks */,
+				F6BBFFF0251E4437001A5524 /* BenchmarkCharts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,7 +285,7 @@
 				BBCA26EE1F59B88E00C6FB74 /* BenchmarkModel */,
 				BB4F155F1F409882003C05C3 /* BenchmarkRunner */,
 				BBCA26DB1F59B82C00C6FB74 /* BenchmarkCharts */,
-				BB23CE801F61B476006FC3B3 /* attachart */,
+				F6BBFFE4251E436A001A5524 /* attabench-cli */,
 				BB1DA9CE1E2E5923000F2B03 /* Products */,
 				BBCA268A1F559B3A00C6FB74 /* Frameworks */,
 			);
@@ -299,20 +299,9 @@
 				BBCA26DA1F59B82C00C6FB74 /* BenchmarkCharts.framework */,
 				BBCA26ED1F59B88E00C6FB74 /* BenchmarkModel.framework */,
 				BB65B0F31F59BBA4007EB717 /* Attabench.app */,
-				F68A764124177B46000A6D55 /* attachart */,
+				F6BBFFE3251E436A001A5524 /* attabench */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		BB23CE801F61B476006FC3B3 /* attachart */ = {
-			isa = PBXGroup;
-			children = (
-				F6F731A52517EAB60046AEF0 /* Commands */,
-				BB23CE811F61B476006FC3B3 /* main.swift */,
-				BB55F5771F61CF1E00E9FF6D /* Options.swift */,
-				F6F731C32517F5370046AEF0 /* render.swift */,
-			);
-			path = attachart;
 			sourceTree = "<group>";
 		};
 		BB4F155F1F409882003C05C3 /* BenchmarkRunner */ = {
@@ -417,6 +406,33 @@
 				BB65B0FE1F59BBA5007EB717 /* MainMenu.xib */,
 			);
 			path = IB;
+			sourceTree = "<group>";
+		};
+		F6BB0028251E47B3001A5524 /* Render */ = {
+			isa = PBXGroup;
+			children = (
+				BB55F5771F61CF1E00E9FF6D /* RenderOptions.swift */,
+				F6F731C32517F5370046AEF0 /* render.swift */,
+			);
+			path = Render;
+			sourceTree = "<group>";
+		};
+		F6BB0032251E47F8001A5524 /* Run */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Run;
+			sourceTree = "<group>";
+		};
+		F6BBFFE4251E436A001A5524 /* attabench-cli */ = {
+			isa = PBXGroup;
+			children = (
+				F6BB0032251E47F8001A5524 /* Run */,
+				F6F731A52517EAB60046AEF0 /* Commands */,
+				F6BB0028251E47B3001A5524 /* Render */,
+				BB23CE811F61B476006FC3B3 /* main.swift */,
+			);
+			path = "attabench-cli";
 			sourceTree = "<group>";
 		};
 		F6F731A52517EAB60046AEF0 /* Commands */ = {
@@ -543,27 +559,27 @@
 			productReference = BBCA26ED1F59B88E00C6FB74 /* BenchmarkModel.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		F68A764024177B46000A6D55 /* attachart */ = {
+		F6BBFFE2251E436A001A5524 /* attabench-cli */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F68A764524177B46000A6D55 /* Build configuration list for PBXNativeTarget "attachart" */;
+			buildConfigurationList = F6BBFFEB251E436A001A5524 /* Build configuration list for PBXNativeTarget "attabench-cli" */;
 			buildPhases = (
-				F68A763D24177B46000A6D55 /* Sources */,
-				F68A763E24177B46000A6D55 /* Frameworks */,
-				F68A763F24177B46000A6D55 /* CopyFiles */,
-				F68A765F24177BB4000A6D55 /* Embed Frameworks */,
+				F6BBFFDF251E436A001A5524 /* Sources */,
+				F6BBFFE0251E436A001A5524 /* Frameworks */,
+				F6BBFFE1251E436A001A5524 /* CopyFiles */,
+				F6BBFFF8251E4437001A5524 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F68A765624177BB4000A6D55 /* PBXTargetDependency */,
-				F68A765A24177BB4000A6D55 /* PBXTargetDependency */,
+				F6BBFFF3251E4437001A5524 /* PBXTargetDependency */,
+				F6BBFFF7251E4437001A5524 /* PBXTargetDependency */,
 			);
-			name = attachart;
+			name = "attabench-cli";
 			packageProductDependencies = (
-				F603B2B82439F7770050A973 /* ArgumentParser */,
+				F6BBFFF9251E443C001A5524 /* ArgumentParser */,
 			);
-			productName = attachart;
-			productReference = F68A764124177B46000A6D55 /* attachart */;
+			productName = "attabench-cli";
+			productReference = F6BBFFE3251E436A001A5524 /* attabench */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -572,7 +588,7 @@
 		BB1DA9C51E2E5923000F2B03 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1140;
+				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Károly Lőrentey";
 				TargetAttributes = {
@@ -599,8 +615,8 @@
 						LastSwiftMigration = 1140;
 						ProvisioningStyle = Automatic;
 					};
-					F68A764024177B46000A6D55 = {
-						CreatedOnToolsVersion = 11.4;
+					F6BBFFE2251E436A001A5524 = {
+						CreatedOnToolsVersion = 12.0;
 					};
 				};
 			};
@@ -626,7 +642,7 @@
 				BBCA26EC1F59B88E00C6FB74 /* BenchmarkModel */,
 				BB4F155D1F409882003C05C3 /* BenchmarkRunner */,
 				BBCA26D91F59B82C00C6FB74 /* BenchmarkCharts */,
-				F68A764024177B46000A6D55 /* attachart */,
+				F6BBFFE2251E436A001A5524 /* attabench-cli */,
 			);
 		};
 /* End PBXProject section */
@@ -730,17 +746,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F68A763D24177B46000A6D55 /* Sources */ = {
+		F6BBFFDF251E436A001A5524 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6F731BC2517EC700046AEF0 /* MainCommand.swift in Sources */,
-				F68A764B24177BA3000A6D55 /* main.swift in Sources */,
-				F6F731A72517EABC0046AEF0 /* ListTasksCommand.swift in Sources */,
-				F6F731C42517F5370046AEF0 /* render.swift in Sources */,
-				F68A764C24177BA3000A6D55 /* Options.swift in Sources */,
-				F6F731AF2517EBEF0046AEF0 /* ListThemesCommand.swift in Sources */,
-				F6F731B42517EC470046AEF0 /* RenderCommand.swift in Sources */,
+				F6BBFFFE251E448F001A5524 /* main.swift in Sources */,
+				F6BBFFFF251E448F001A5524 /* RenderOptions.swift in Sources */,
+				F6BB000A251E44B9001A5524 /* ListTasksCommand.swift in Sources */,
+				F6BB000C251E44B9001A5524 /* ListThemesCommand.swift in Sources */,
+				F6BB000B251E44B9001A5524 /* MainCommand.swift in Sources */,
+				F6BB000D251E44B9001A5524 /* RenderCommand.swift in Sources */,
+				F6BB0000251E448F001A5524 /* render.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -762,15 +778,15 @@
 			target = BBCA26EC1F59B88E00C6FB74 /* BenchmarkModel */;
 			targetProxy = BBCC9FA21F5AD00400AE36DE /* PBXContainerItemProxy */;
 		};
-		F68A765624177BB4000A6D55 /* PBXTargetDependency */ = {
+		F6BBFFF3251E4437001A5524 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BBCA26D91F59B82C00C6FB74 /* BenchmarkCharts */;
-			targetProxy = F68A765524177BB4000A6D55 /* PBXContainerItemProxy */;
+			targetProxy = F6BBFFF2251E4437001A5524 /* PBXContainerItemProxy */;
 		};
-		F68A765A24177BB4000A6D55 /* PBXTargetDependency */ = {
+		F6BBFFF7251E4437001A5524 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BBCA26EC1F59B88E00C6FB74 /* BenchmarkModel */;
-			targetProxy = F68A765924177BB4000A6D55 /* PBXContainerItemProxy */;
+			targetProxy = F6BBFFF6251E4437001A5524 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1979,7 +1995,7 @@
 			};
 			name = Unchecked;
 		};
-		F68A764624177B46000A6D55 /* Debug */ = {
+		F6BBFFE7251E436A001A5524 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1988,18 +2004,21 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P7D3P64ME5;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = attabench;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		F68A764724177B46000A6D55 /* Optimized */ = {
+		F6BBFFE8251E436A001A5524 /* Optimized */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2025,6 +2044,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2034,6 +2054,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = P7D3P64ME5;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -2047,7 +2069,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = attabench;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -2055,7 +2077,7 @@
 			};
 			name = Optimized;
 		};
-		F68A764824177B46000A6D55 /* WholeModule */ = {
+		F6BBFFE9251E436A001A5524 /* WholeModule */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2081,6 +2103,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2090,6 +2113,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = P7D3P64ME5;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -2103,7 +2128,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = attabench;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -2111,7 +2136,7 @@
 			};
 			name = WholeModule;
 		};
-		F68A764924177B46000A6D55 /* Unchecked */ = {
+		F6BBFFEA251E436A001A5524 /* Unchecked */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2137,6 +2162,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2146,6 +2172,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = P7D3P64ME5;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -2159,7 +2187,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = attabench;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -2225,13 +2253,13 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Optimized;
 		};
-		F68A764524177B46000A6D55 /* Build configuration list for PBXNativeTarget "attachart" */ = {
+		F6BBFFEB251E436A001A5524 /* Build configuration list for PBXNativeTarget "attabench-cli" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F68A764624177B46000A6D55 /* Debug */,
-				F68A764724177B46000A6D55 /* Optimized */,
-				F68A764824177B46000A6D55 /* WholeModule */,
-				F68A764924177B46000A6D55 /* Unchecked */,
+				F6BBFFE7251E436A001A5524 /* Debug */,
+				F6BBFFE8251E436A001A5524 /* Optimized */,
+				F6BBFFE9251E436A001A5524 /* WholeModule */,
+				F6BBFFEA251E436A001A5524 /* Unchecked */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Optimized;
@@ -2266,11 +2294,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F603B2B82439F7770050A973 /* ArgumentParser */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F603B2B72439F7770050A973 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
-			productName = ArgumentParser;
-		};
 		F6ACE9562402A74A005A20FE /* Benchmarking */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F6ACE9552402A74A005A20FE /* XCRemoteSwiftPackageReference "Benchmarking" */;
@@ -2280,6 +2303,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F6ACE9552402A74A005A20FE /* XCRemoteSwiftPackageReference "Benchmarking" */;
 			productName = Benchmarking;
+		};
+		F6BBFFF9251E443C001A5524 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F603B2B72439F7770050A973 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
 		};
 		F6D815372400651D0024C899 /* BigInt */ = {
 			isa = XCSwiftPackageProductDependency;

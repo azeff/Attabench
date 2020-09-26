@@ -8,6 +8,6 @@ struct MainCommand: ParsableCommand {
     
     static var configuration = CommandConfiguration(
         commandName: "",
-        subcommands: [ListTasksCommand.self, ListThemesCommand.self, RenderCommand.self]
+        subcommands: [RenderCommand.self, ListTasksCommand.self, ListThemesCommand.self]
     )
 }
